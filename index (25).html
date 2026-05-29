@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="uz" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exploria — O'zbekiston Sayohat Platformasi</title>
+<meta name="description" content="O'zbekiston bo'ylab sayohat — mehmonxonalar, audio gidlar, tarixiy joylar, afsonalar. Exploria bilan O'zbekistonni kashf eting!">
+<meta name="keywords" content="O'zbekiston sayohat, Samarqand, Buxoro, Xiva, mehmonxona, audio gid, turizm, Uzbekistan travel">
+<meta name="author" content="Exploria">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Exploria — O'zbekiston Sayohat Platformasi">
+<meta property="og:description" content="Mehmonxonalar, audio gidlar va yashirin joylar — barchasi bir joyda.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://exploriauzb-hack.github.io/exploria/">
+<meta property="og:image" content="https://exploriauzb-hack.github.io/exploria/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Exploria — O'zbekiston">
+<meta name="twitter:description" content="O'zbekistonni kashf eting — audio gidlar, mehmonxonalar, tarixiy joylar.">
+<link rel="canonical" href="https://exploriauzb-hack.github.io/exploria/">
+<title>Exploria — O'zbekiston Sayohat Platformasi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root {
+  --orange: #ff5500;
+  --orange-light: #ff7733;
+  --gold: #ffaa00;
+  --gold-light: #ffcc66;
+  --cream: #fffaf6;
+  --dark: #1a1a1a;
+  --text: #1a1a1a;
+  --muted: #777;
+  --border: #ffddc8;
+  --card-bg: #fff;
+  --shadow: 0 4px 32px rgba(255,85,0,0.10);
+  --radius: 16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(13,13,26,0.97);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:68px;border-bottom:1px solid rgba(255,159,74,0.2);}
+.nav-logo{font-family:'Playfair Display',serif;color:var(--gold);font-size:1.5rem;font-weight:700;cursor:pointer;}
+.nav-links{display:flex;gap:4px;align-items:center;}
+.nav-link{color:rgba(255,255,255,0.75);padding:7px 13px;border-radius:8px;font-size:0.85rem;font-weight:500;cursor:pointer;transition:all .2s;border:none;background:none;}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,0.08);}
+.nav-link.active{color:var(--gold);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-btn{background:linear-gradient(135deg,#ff4500,#ff6a00);color:#fff;padding:8px 18px;border-radius:8px;font-size:0.85rem;font-weight:600;border:none;cursor:pointer;box-shadow:0 2px 8px rgba(255,69,0,0.3);}
+.lang-btn{background:rgba(255,255,255,0.1);color:#fff;padding:6px 12px;border-radius:8px;font-size:0.8rem;font-weight:600;border:1px solid rgba(255,255,255,0.2);cursor:pointer;}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#ff4500,#ff0080);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.9rem;cursor:pointer;border:2px solid var(--gold);}
+
+/* PAGES */
+.page{display:none;padding-top:68px;min-height:100vh;}
+.page.active{display:block;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0d0d1a 0%,#1a0533 30%,#2d0a1e 60%,#1a0d00 100%);padding:90px 40px 70px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23faa307' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");}
+.hero-tag{display:inline-block;background:rgba(255,159,74,0.15);color:var(--gold);border:1px solid rgba(255,159,74,0.3);padding:6px 16px;border-radius:50px;font-size:0.78rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.8rem);color:#fff;font-weight:900;line-height:1.1;margin-bottom:18px;}
+.hero h1 span{background:linear-gradient(135deg,#ff4500,#ff6a00,#ffaa00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero h1 span{color:var(--gold);}
+.hero p{color:rgba(255,220,180,0.9);font-size:1.1rem;max-width:540px;margin:0 auto 36px;line-height:1.7;}
+.hero-search{display:flex;gap:10px;max-width:560px;margin:0 auto;}
+.hero-search input{flex:1;padding:14px 18px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.07);color:#fff;font-size:0.95rem;outline:none;}
+.hero-search input::placeholder{color:rgba(255,255,255,0.35);}
+.hero-search button{padding:14px 24px;background:var(--orange);color:#fff;border:none;border-radius:12px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.hero-stats{display:flex;justify-content:center;gap:48px;margin-top:56px;background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);padding:24px 48px;border-radius:20px;border:1px solid rgba(255,85,0,0.2);width:fit-content;margin-left:auto;margin-right:auto;}
+.stat{text-align:center;}
+.stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gold);}
+.stat-label{color:rgba(255,200,150,0.9);font-size:0.82rem;margin-top:4px;font-weight:500;}
+
+/* SECTIONS */
+.section{padding:56px 40px;max-width:1280px;margin:0 auto;}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
+.section-title{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;}
+.section-title span{background:linear-gradient(135deg,#ff4500,#ff6a00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.see-all{color:#ff4500;font-weight:600;cursor:pointer;font-size:0.88rem;border:none;background:none;}
+
+/* CARDS */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px;}
+
+/* HOTEL CARD */
+.hotel-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;cursor:pointer;transition:transform .25s,box-shadow .25s;border:1px solid var(--border);}
+.hotel-card:hover{transform:translateY(-5px);box-shadow:0 16px 48px rgba(255,85,0,0.14);}
+.hotel-img{height:190px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;}
+.hotel-stars{position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.5);color:var(--gold);padding:4px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;}
+.hotel-body{padding:18px;}
+.hotel-name{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;margin-bottom:5px;}
+.hotel-loc{color:var(--muted);font-size:0.85rem;margin-bottom:10px;}
+.hotel-amenities{display:flex;gap:5px;flex-wrap:wrap;margin:8px 0;}
+.amenity{background:#fffaf7;color:var(--orange);padding:3px 10px;border-radius:12px;font-size:0.73rem;font-weight:500;}
+.hotel-footer{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+.hotel-price{font-size:1.2rem;font-weight:700;color:var(--orange);}
+.hotel-price span{font-size:0.78rem;color:var(--muted);font-weight:400;}
+.hotel-badge{background:#fffaf7;color:var(--orange);padding:4px 10px;border-radius:20px;font-size:0.73rem;font-weight:600;}
+.book-btn{width:100%;margin-top:12px;padding:11px;background:linear-gradient(135deg,#ff4500,#ff6a00);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer;font-size:0.88rem;box-shadow:0 4px 12px rgba(255,69,0,0.3);transition:all .2s;}
+.book-btn:hover{background:var(--orange-light);}
+
+/* AUDIO CARD */
+.audio-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;transition:transform .25s;border:1px solid var(--border);display:flex;flex-direction:column;gap:12px;}
+.audio-card:hover{transform:translateY(-4px);}
+.audio-header{display:flex;align-items:center;gap:12px;}
+.audio-emoji{width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,#ff4500,#ff0080);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.audio-title{font-weight:700;font-size:0.95rem;margin-bottom:3px;}
+.audio-meta{color:var(--muted);font-size:0.78rem;}
+.audio-player{background:#fffaf7;border-radius:10px;padding:10px 14px;}
+.audio-controls{display:flex;align-items:center;gap:10px;}
+.play-btn{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#ff4500,#ff6a00);border:none;color:#fff;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(255,69,0,0.4);}
+.audio-progress{flex:1;height:4px;background:#ffddc8;border-radius:2px;cursor:pointer;overflow:hidden;}
+.audio-bar{height:100%;background:linear-gradient(90deg,#ff4500,#ffaa00);border-radius:2px;width:0%;}
+.audio-time{font-size:0.73rem;color:var(--muted);white-space:nowrap;}
+
+/* PLACE CARD */
+.place-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;cursor:pointer;transition:transform .25s;border:1px solid var(--border);}
+.place-card:hover{transform:translateY(-4px);}
+.place-thumb{height:150px;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;}
+.place-info{padding:14px;}
+.place-name{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;margin-bottom:4px;}
+.place-cat{color:var(--muted);font-size:0.8rem;margin-bottom:6px;}
+.stars-row{color:var(--gold);}
+.hidden-badge{display:inline-flex;align-items:center;gap:4px;background:#fffaf7;color:#b45309;border:1px solid #fcd34d;padding:3px 10px;border-radius:20px;font-size:0.73rem;font-weight:600;margin-top:6px;}
+
+/* LEGEND CARD */
+.legend-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;border:1px solid var(--border);border-left:4px solid;border-image:linear-gradient(180deg,#ff4500,#ff0080) 1;transition:transform .25s;}
+.legend-card:hover{transform:translateY(-4px);}
+.legend-emoji{font-size:2rem;margin-bottom:10px;}
+.legend-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:6px;}
+.legend-loc{color:var(--muted);font-size:0.8rem;margin-bottom:10px;}
+.legend-story{font-size:0.88rem;line-height:1.7;color:#444;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+.legend-cat{display:inline-block;background:#fffaf7;color:var(--orange);padding:3px 10px;border-radius:12px;font-size:0.73rem;font-weight:600;margin-top:10px;}
+
+/* BEST CARD */
+.best-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;border:1px solid var(--border);display:flex;gap:16px;align-items:flex-start;transition:transform .25s;}
+.best-card:hover{transform:translateY(-4px);}
+.best-rank{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:var(--border);min-width:44px;}
+.best-rank.top3{color:var(--gold);}
+.best-content{}
+.best-title{font-weight:700;font-size:1rem;margin-bottom:4px;}
+.best-desc{color:var(--muted);font-size:0.82rem;line-height:1.5;margin-bottom:6px;}
+.best-loc{color:var(--orange);font-size:0.78rem;font-weight:600;}
+
+/* MAP */
+#map{height:calc(100vh - 140px);border-radius:var(--radius);overflow:hidden;}
+.map-filters{display:flex;gap:8px;padding:18px 40px 0;flex-wrap:wrap;}
+.map-filter-btn{padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:0.83rem;font-weight:500;transition:all .2s;}
+.map-filter-btn.active,.map-filter-btn:hover{background:linear-gradient(135deg,#ff4500,#ff6a00);color:#fff;border-color:#ff4500;}
+
+/* PROFILE */
+.profile-hero{background:linear-gradient(135deg,#1a1a1a,#2d1810);padding:56px 40px 36px;}
+.profile-avatar{width:84px;height:84px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:1.9rem;color:#fff;font-weight:700;border:4px solid rgba(255,255,255,0.2);margin-bottom:14px;}
+.profile-name{font-family:'Playfair Display',serif;color:#fff;font-size:1.7rem;font-weight:700;}
+.profile-email{color:rgba(255,255,255,0.5);font-size:0.87rem;margin-top:4px;}
+.profile-tabs{display:flex;gap:4px;padding:16px 40px 0;border-bottom:1px solid var(--border);background:#fff;}
+.profile-tab{padding:10px 18px;border:none;background:none;cursor:pointer;font-size:0.87rem;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;}
+.profile-tab.active{color:#ff4500;border-bottom-color:#ff4500;}
+.profile-content{padding:28px 40px;max-width:900px;}
+.profile-section{display:none;}
+.profile-section.active{display:block;}
+.fav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;}
+.fav-item{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;gap:10px;align-items:center;}
+.fav-emoji{font-size:1.6rem;}
+.fav-name{font-weight:600;font-size:0.9rem;}
+.fav-type{color:var(--muted);font-size:0.78rem;margin-top:2px;}
+.remove-fav{margin-left:auto;background:none;border:none;color:#e05555;cursor:pointer;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-group label{font-size:0.82rem;font-weight:600;color:var(--muted);}
+.form-input{padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-size:0.92rem;outline:none;}
+.form-input:focus{border-color:var(--orange);}
+.save-btn{padding:11px 24px;background:linear-gradient(135deg,#ff4500,#ff6a00);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer;}
+
+/* ADMIN */
+.admin-header{background:linear-gradient(135deg,#0d0d1a,#1a0533);padding:28px 40px;}
+.admin-header h1{font-family:'Playfair Display',serif;color:#fff;font-size:1.7rem;}
+.admin-header p{color:rgba(255,255,255,0.45);font-size:0.85rem;margin-top:4px;}
+.admin-tabs{display:flex;gap:2px;padding:14px 40px 0;background:#fff;border-bottom:1px solid var(--border);overflow-x:auto;}
+.admin-tab{padding:9px 16px;border:none;background:none;cursor:pointer;font-size:0.82rem;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;}
+.admin-tab.active{color:#ff4500;border-bottom-color:#ff4500;}
+.admin-section{display:none;padding:26px 40px;}
+.admin-section.active{display:block;}
+.admin-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
+.admin-stat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;}
+.admin-stat-num{font-size:1.9rem;font-weight:700;color:var(--orange);font-family:'Playfair Display',serif;}
+.admin-stat-label{color:var(--muted);font-size:0.82rem;margin-top:4px;}
+.admin-table{width:100%;background:#fff;border-radius:12px;border:1px solid var(--border);overflow:hidden;border-collapse:collapse;}
+.admin-table th{background:#fffaf7;padding:11px 14px;text-align:left;font-size:0.78rem;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border);}
+.admin-table td{padding:12px 14px;font-size:0.83rem;border-bottom:1px solid #fffaf7;vertical-align:middle;}
+.admin-table tr:last-child td{border-bottom:none;}
+.admin-table tr:hover td{background:#fffaf7;}
+.edit-btn,.del-btn{padding:4px 10px;border-radius:6px;border:none;cursor:pointer;font-size:0.75rem;font-weight:600;}
+.edit-btn{background:#fffaf7;color:var(--orange);margin-right:5px;}
+.del-btn{background:#ffeaea;color:#d43c3c;}
+.add-btn{display:flex;align-items:center;gap:7px;padding:9px 18px;background:linear-gradient(135deg,#ff4500,#ff6a00);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer;margin-bottom:18px;font-size:0.87rem;}
+
+/* AI CHAT */
+.ai-section{padding:40px;}
+.ai-container{max-width:800px;margin:0 auto;}
+.ai-header{text-align:center;margin-bottom:32px;}
+.ai-header h2{font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:8px;}
+.ai-header p{color:var(--muted);}
+.ai-chat{background:#fff;border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;}
+.ai-messages{height:400px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;}
+.ai-msg{max-width:80%;padding:12px 16px;border-radius:14px;font-size:0.9rem;line-height:1.6;}
+.ai-msg.user{background:var(--orange);color:#fff;align-self:flex-end;border-radius:14px 14px 4px 14px;}
+.ai-msg.bot{background:#fffaf7;color:var(--text);align-self:flex-start;border-radius:14px 14px 14px 4px;}
+.ai-msg.typing{color:var(--muted);font-style:italic;}
+.ai-input-row{display:flex;gap:10px;padding:16px;border-top:1px solid var(--border);}
+.ai-input{flex:1;padding:11px 16px;border:1px solid var(--border);border-radius:10px;font-size:0.92rem;outline:none;}
+.ai-input:focus{border-color:var(--orange);}
+.ai-send{padding:11px 20px;background:var(--orange);color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600;}
+.ai-suggestions{display:flex;gap:8px;flex-wrap:wrap;padding:0 16px 14px;}
+.ai-sug{padding:6px 14px;background:#fffaf7;color:var(--orange);border:1px solid var(--border);border-radius:20px;font-size:0.8rem;cursor:pointer;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:20px;padding:28px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;position:relative;}
+.modal h3{font-family:'Playfair Display',serif;font-size:1.35rem;margin-bottom:18px;}
+.modal-grid{display:grid;gap:14px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
+.cancel-btn{padding:9px 18px;border:1px solid var(--border);border-radius:10px;background:none;cursor:pointer;font-weight:500;}
+.submit-btn{padding:9px 22px;background:linear-gradient(135deg,#ff4500,#ff6a00);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer;}
+.auth-tabs{display:flex;margin-bottom:22px;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.auth-tab{flex:1;padding:10px;border:none;background:none;cursor:pointer;font-weight:500;font-size:0.9rem;}
+.auth-tab.active{background:linear-gradient(135deg,#ff4500,#ff6a00);color:#fff;}
+.auth-form{display:grid;gap:12px;}
+.auth-form input{padding:11px 14px;border:1px solid var(--border);border-radius:10px;font-size:0.92rem;outline:none;}
+.auth-form input:focus{border-color:var(--orange);}
+.auth-submit{padding:13px;background:linear-gradient(135deg,#ff4500,#ff6a00);color:#fff;border:none;border-radius:10px;font-weight:600;font-size:0.95rem;cursor:pointer;}
+.auth-error{color:#d43c3c;font-size:0.82rem;text-align:center;}
+
+/* MISC */
+.loader{display:flex;align-items:center;justify-content:center;padding:56px;color:var(--muted);gap:10px;}
+.spinner{width:22px;height:22px;border:2px solid var(--border);border-top-color:#ff4500;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.empty{text-align:center;padding:56px 20px;color:var(--muted);}
+.empty-icon{font-size:2.8rem;margin-bottom:14px;}
+.empty h3{font-size:1.05rem;margin-bottom:6px;color:var(--text);}
+.toast{position:fixed;bottom:28px;right:28px;background:#1a1a1a;color:#fff;padding:12px 20px;border-radius:12px;font-size:0.87rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all .3s;border-left:4px solid;border-image:linear-gradient(180deg,#ff4500,#ff0080) 1;}
+.toast.show{transform:translateY(0);opacity:1;}
+.page-hero{background:linear-gradient(135deg,#1a1a1a,#2d1810);padding:48px 40px 36px;}
+.page-hero h2{font-family:'Playfair Display',serif;color:#fff;font-size:2rem;font-weight:700;margin-bottom:8px;}
+.page-hero p{color:rgba(255,255,255,0.55);}
+.filter-bar{display:flex;gap:10px;padding:20px 40px;flex-wrap:wrap;background:#fff;border-bottom:1px solid var(--border);}
+.filter-bar input,.filter-bar select{padding:9px 14px;border:1px solid var(--border);border-radius:10px;font-size:0.87rem;outline:none;background:#fff;}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--orange);}
+.bg-alt{background:#fff8f3;}
+/* MOBILE MENU */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none;}
+.hamburger span{display:block;width:22px;height:2px;background:rgba(255,255,255,0.8);border-radius:2px;transition:all .3s;}
+.mobile-menu{display:none;position:fixed;top:68px;left:0;right:0;background:rgba(13,13,26,0.98);backdrop-filter:blur(20px);z-index:999;padding:16px;border-bottom:1px solid rgba(255,69,0,0.2);flex-direction:column;gap:4px;}
+.mobile-menu.open{display:flex;}
+.mobile-nav-link{color:rgba(255,255,255,0.8);padding:12px 16px;border-radius:10px;font-size:0.92rem;font-weight:500;cursor:pointer;border:none;background:none;text-align:left;width:100%;transition:all .2s;}
+.mobile-nav-link:hover,.mobile-nav-link.active{background:rgba(255,69,0,0.15);color:#ff6a00;}
+@media(max-width:768px){
+  nav{padding:0 16px;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero{padding:56px 20px 44px;}
+  .hero-stats{gap:16px;padding:16px 20px;}
+  .stat-num{font-size:1.6rem;}
+  .section,.ai-section,.admin-section,.profile-content{padding:20px 16px;}
+  .map-filters{padding:14px 16px 0;}
+  .profile-tabs,.admin-tabs{padding-left:16px;overflow-x:auto;}
+  .page-hero{padding:32px 16px 24px;}
+  .filter-bar{padding:12px 16px;gap:8px;}
+  .filter-bar input,.filter-bar select{font-size:0.85rem;}
+  .cards-grid{grid-template-columns:1fr;}
+  .hero-search{flex-direction:column;gap:8px;}
+  .hero-search input{width:100%;}
+  .hero-search button{width:100%;}
+  .admin-stats{grid-template-columns:repeat(2,1fr);}
+  .modal{padding:20px;margin:10px;}
+  #map{height:60vh;}
+  .map-filter-btn{font-size:0.78rem;padding:6px 12px;}
+}
+
+/* REVIEWS */
+.reviews-section { margin-top: 24px; }
+.reviews-title { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:16px; color:var(--text); }
+.review-form { background:#fffaf7; border:1px solid var(--border); border-radius:14px; padding:18px; margin-bottom:20px; }
+.review-form textarea { width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:10px; font-size:0.88rem; resize:none; outline:none; font-family:'DM Sans',sans-serif; }
+.review-form textarea:focus { border-color:var(--orange); }
+.star-select { display:flex; gap:6px; margin-bottom:12px; }
+.star-select span { font-size:1.6rem; cursor:pointer; opacity:0.3; transition:opacity .15s; }
+.star-select span.active { opacity:1; }
+.review-submit { padding:9px 22px; background:linear-gradient(135deg,#ff4500,#ff6a00); color:#fff; border:none; border-radius:10px; font-weight:600; cursor:pointer; font-size:0.87rem; margin-top:10px; }
+.review-item { border-bottom:1px solid var(--border); padding:14px 0; }
+.review-item:last-child { border-bottom:none; }
+.review-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.reviewer-name { font-weight:600; font-size:0.9rem; }
+.review-stars { color:#ffaa00; font-size:0.9rem; }
+.review-date { color:var(--muted); font-size:0.75rem; }
+.review-text { font-size:0.87rem; color:#444; line-height:1.6; }
+
+/* IMPROVED HERO */
+.hero-wave { position:absolute; bottom:0; left:0; right:0; }
+
+/* IMPROVED CARDS - hover glow */
+.hotel-card:hover { box-shadow: 0 20px 60px rgba(255,85,0,0.18); }
+.audio-card:hover { box-shadow: 0 12px 40px rgba(255,85,0,0.12); }
+.place-card:hover { box-shadow: 0 12px 40px rgba(255,85,0,0.12); }
+
+@keyframes popIn{from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+/* GALLERY */
+.gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin-top:16px; }
+.gallery-item { aspect-ratio:4/3; border-radius:12px; overflow:hidden; background:linear-gradient(135deg,#ff5500,#ffaa00); display:flex; align-items:center; justify-content:center; font-size:2.5rem; cursor:pointer; transition:transform .2s; }
+.gallery-item:hover { transform:scale(1.03); }
+
+/* BADGE improvements */
+.hotel-badge { background:linear-gradient(135deg,#fff4ee,#ffddc8); color:var(--orange); }
+.amenity { background:#fff4ee; color:#cc3300; }
+.legend-cat { background:linear-gradient(135deg,#fff4ee,#ffddc8); color:var(--orange); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')" style="display:flex;align-items:center;gap:10px;">
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Outer octagon frame -->
+    <polygon points="16,1 27,6 31,17 26,28 16,31 6,28 1,17 5,6" fill="none" stroke="#ff5500" stroke-width="1.5"/>
+    <!-- Inner geometric star pattern (O'zbek naqsh) -->
+    <polygon points="16,5 18.5,12 26,12 20,16.5 22.5,24 16,19.5 9.5,24 12,16.5 6,12 13.5,12" fill="#ff5500" opacity="0.15"/>
+    <!-- Center 8-pointed star -->
+    <polygon points="16,8 17.5,13.5 23,12 18.5,15.5 21,21 16,17.5 11,21 13.5,15.5 9,12 14.5,13.5" fill="#ff5500" opacity="0.5"/>
+    <!-- Center dot -->
+    <circle cx="16" cy="16" r="2.5" fill="#ff5500"/>
+    <!-- 4 small diamonds at corners -->
+    <polygon points="16,10 17,12 16,14 15,12" fill="#ffaa00"/>
+    <polygon points="22,16 24,17 22,18 20,17" fill="#ffaa00"/>
+    <polygon points="16,18 17,20 16,22 15,20" fill="#ffaa00"/>
+    <polygon points="10,16 12,17 10,18 8,17" fill="#ffaa00"/>
+  </svg>
+  <span style="font-family:'Playfair Display',serif;color:#ff9900;font-size:1.4rem;font-weight:700;letter-spacing:2px;text-shadow:0 0 30px rgba(255,69,0,0.6),0 0 60px rgba(255,0,128,0.3);">EXPLORIA</span>
+</div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showPage('home')" data-i18n="nav.home">Bosh sahifa</button>
+    <button class="nav-link" onclick="showPage('hotels')" data-i18n="nav.hotels">Mehmonxonalar</button>
+    <button class="nav-link" onclick="showPage('audio')" data-i18n="nav.audio">Audio gidlar</button>
+    <button class="nav-link" onclick="showPage('places')" data-i18n="nav.places">Joylar</button>
+    <button class="nav-link" onclick="showPage('legends')" data-i18n="nav.legends">Afsonalar</button>
+    <button class="nav-link" onclick="showPage('best')" data-i18n="nav.best">Eng sara</button>
+    <button class="nav-link" onclick="showPage('map')" data-i18n="nav.map">Xarita</button>
+    <button class="nav-link" onclick="showPage('ai')" data-i18n="nav.ai">AI gid</button>
+    <button class="nav-link" onclick="showPage('museums')">Muzeylar</button>
+    <button class="nav-link" onclick="showPage('currency')" data-i18n="nav.currency">💱 Valyuta</button>
+    <button class="nav-link" onclick="showPage('phrases')" data-i18n="nav.phrases">💬 Iboralar</button>
+  </div>
+  <div class="nav-right" style="display:flex;align-items:center;gap:10px;">
+    <div id="nav-weather" style="color:rgba(255,255,255,0.7);font-size:0.8rem;display:flex;align-items:center;gap:4px;cursor:pointer;" onclick="showPage('map')" title="Ob-havo"></div>
+    <button class="lang-btn" onclick="toggleLang()">EN</button>
+    <div id="nav-user-area"><button class="nav-btn" onclick="openAuth()" data-i18n="nav.login">Kirish</button></div>
+    <button class="hamburger" onclick="toggleMobileMenu()" id="hamburger-btn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-nav-link active" onclick="showPage('home');closeMobileMenu()" data-i18n="nav.home">Bosh sahifa</button>
+  <button class="mobile-nav-link" onclick="showPage('hotels');closeMobileMenu()" data-i18n="nav.hotels">Mehmonxonalar</button>
+  <button class="mobile-nav-link" onclick="showPage('audio');closeMobileMenu()" data-i18n="nav.audio">Audio gidlar</button>
+  <button class="mobile-nav-link" onclick="showPage('places');closeMobileMenu()" data-i18n="nav.places">Joylar</button>
+  <button class="mobile-nav-link" onclick="showPage('legends');closeMobileMenu()" data-i18n="nav.legends">Afsonalar</button>
+  <button class="mobile-nav-link" onclick="showPage('best');closeMobileMenu()" data-i18n="nav.best">Eng sara</button>
+  <button class="mobile-nav-link" onclick="showPage('map');closeMobileMenu()" data-i18n="nav.map">Xarita</button>
+  <button class="mobile-nav-link" onclick="showPage('ai');closeMobileMenu()" data-i18n="nav.ai">AI gid</button>
+  <button class="mobile-nav-link" onclick="showPage('museums');closeMobileMenu()">Muzeylar</button>
+  <button class="mobile-nav-link" onclick="showPage('currency');closeMobileMenu()" data-i18n="nav.currency">Valyuta</button>
+  <button class="mobile-nav-link" onclick="showPage('phrases');closeMobileMenu()" data-i18n="nav.phrases">Iboralar</button>
+  <div id="mobile-user-area" style="margin-top:8px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);"></div>
+</div>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-tag" data-i18n="hero.tag">O'ZBEKISTON SAYOHATI</div>
+    <h1 data-i18n-html="hero.title">O'zbekistonni <span>kashf eting</span></h1>
+    <p data-i18n="hero.subtitle">Audio gidlar, ajoyib mehmonxonalar va yashirin joylar — barchasi bir joyda.</p>
+    <div class="hero-search" style="background:rgba(255,255,255,0.08);backdrop-filter:blur(12px);border-radius:16px;padding:8px;border:1px solid rgba(255,85,0,0.25);max-width:600px;margin:0 auto;">
+      <input type="text" id="search-input" data-i18n-placeholder="hero.search" placeholder="Shahar, joy yoki mehmonxona qidiring..." onkeydown="if(event.key==='Enter')doSearch(this.value)" style="background:transparent;border:none;flex:1;padding:10px 16px;color:#fff;font-size:1rem;outline:none;">
+      <button onclick="doSearch(document.getElementById('search-input').value)" data-i18n="hero.searchBtn" style="padding:12px 28px;background:linear-gradient(135deg,#ff4500,#ff6a00);color:#fff;border:none;border-radius:12px;font-weight:700;cursor:pointer;font-size:0.95rem;box-shadow:0 4px 20px rgba(255,69,0,0.5);">Qidirish</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num" id="stat-hotels">—</div><div class="stat-label" data-i18n="nav.hotels">Mehmonxona</div></div>
+      <div class="stat"><div class="stat-num" id="stat-audio">—</div><div class="stat-label" data-i18n="nav.audio">Audio gid</div></div>
+      <div class="stat"><div class="stat-num" id="stat-places">—</div><div class="stat-label" data-i18n="nav.places">Diqqatga sazovor joy</div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-header"><h2 class="section-title"><span data-i18n="nav.hotels">Mehmonxonalar</span></h2><button class="see-all" onclick="showPage('hotels')" data-i18n="common.seeAll">Barchasi →</button></div>
+    <div class="cards-grid" id="home-hotels"><div class="loader"><div class="spinner"></div></div></div>
+  </div>
+  <div style="background:#fff8f3;margin:0;padding:56px 0;">
+    <div class="section" style="padding-top:0;padding-bottom:0;">
+      <div class="section-header"><h2 class="section-title"><span data-i18n="nav.audio">Audio gidlar</span></h2><button class="see-all" onclick="showPage('audio')" data-i18n="common.seeAll">Barchasi →</button></div>
+      <div class="cards-grid" id="home-audio"><div class="loader"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-header"><h2 class="section-title"><span data-i18n="nav.legends">Afsonalar</span></h2><button class="see-all" onclick="showPage('legends')" data-i18n="common.seeAll">Barchasi →</button></div>
+    <div class="cards-grid" id="home-legends"><div class="loader"><div class="spinner"></div></div></div>
+  </div>
+</div>
+
+<!-- HOTELS -->
+<div class="page" id="page-hotels">
+  <div class="page-hero"><h2 data-i18n="nav.hotels">Mehmonxonalar</h2><p data-i18n="hotels.subtitle">O'zbekiston bo'ylab eng yaxshi mehmonxonalar</p></div>
+  <div class="filter-bar">
+    <input type="text" id="hotel-search" data-i18n-placeholder="common.search" placeholder="Qidirish..." style="flex:1;min-width:180px;" oninput="applyHotelFilters()">
+    <select id="hotel-city" onchange="applyHotelFilters()">
+      <option value="" data-i18n="hotels.allCities">Barcha shaharlar</option>
+      <option>Toshkent</option><option>Samarqand</option><option>Buxoro</option><option>Xiva</option>
+    </select>
+    <select id="hotel-stars" onchange="applyHotelFilters()">
+      <option value="" data-i18n="hotels.allStars">Yulduzlar</option>
+      <option value="5">5 ⭐</option><option value="4">4 ⭐</option><option value="3">3 ⭐</option>
+    </select>
+  </div>
+  <div class="section"><div class="cards-grid" id="hotels-list"><div class="loader"><div class="spinner"></div></div></div></div>
+</div>
+
+<!-- AUDIO -->
+<div class="page" id="page-audio">
+  <div class="page-hero"><h2 data-i18n="nav.audio">Audio gidlar</h2><p data-i18n="audio.subtitle">Sayohatingizni boyiting — audio bilan</p></div>
+  <div class="section"><div class="cards-grid" id="audio-list"><div class="loader"><div class="spinner"></div></div></div></div>
+</div>
+
+<!-- PLACES -->
+<div class="page" id="page-places">
+  <div class="page-hero"><h2 data-i18n="nav.places">Diqqatga sazovor joylar</h2><p data-i18n="places.subtitle">Tarixiy, madaniy va yashirin joylar</p></div>
+  <div class="section"><div class="cards-grid" id="places-list"><div class="loader"><div class="spinner"></div></div></div></div>
+</div>
+
+<!-- LEGENDS -->
+<div class="page" id="page-legends">
+  <div class="page-hero"><h2 data-i18n="nav.legends">Afsonalar va Rivoyatlar</h2><p data-i18n="legends.subtitle">O'zbekistonning qadimiy sirlari va tarixiy hikoyalar</p></div>
+  <div class="section"><div class="cards-grid" id="legends-list"><div class="loader"><div class="spinner"></div></div></div></div>
+</div>
+
+<!-- BEST -->
+<div class="page" id="page-best">
+  <div class="page-hero"><h2 data-i18n="nav.best">🏆 O'zbekiston eng...</h2><p data-i18n="best.subtitle">Rekordlar, noyob joylar va qiziqarli faktlar</p></div>
+  <div class="section"><div id="best-list"><div class="loader"><div class="spinner"></div></div></div></div>
+</div>
+
+<!-- MAP -->
+<div class="page" id="page-map">
+  <div class="map-filters">
+    <button class="map-filter-btn active" onclick="filterMap('all',this)" data-i18n="map.all">Hammasi</button>
+    <button class="map-filter-btn" onclick="filterMap('hotel',this)" data-i18n="map.hotels">🏨 Mehmonxonalar</button>
+    <button class="map-filter-btn" onclick="filterMap('place',this)" data-i18n="map.places">📍 Joylar</button>
+  </div>
+  <div class="section" style="padding-top:14px;"><div id="map"></div></div>
+</div>
+
+<!-- AI GID -->
+<div class="page" id="page-ai">
+  <div class="ai-section">
+    <div class="ai-container">
+      <div class="ai-header">
+        <h2 data-i18n="ai.title">🤖 AI Sayohat Gidi</h2>
+        <p data-i18n="ai.subtitle">O'zbekiston bo'ylab sayohat rejangizni tuzishda yordam beraman</p>
+      </div>
+      <div class="ai-chat">
+        <div class="ai-messages" id="ai-messages">
+          <div class="ai-msg bot" id="ai-welcome">Salom! Men Exploria AI gidiman. O'zbekistondagi sayohat, mehmonxonalar, tarixiy joylar haqida savol bering! 🏔️</div>
+        </div>
+        <div class="ai-suggestions">
+          <span class="ai-sug" onclick="aiAsk(this.textContent)">Samarqandni 3 kunda qanday kezaman?</span>
+          <span class="ai-sug" onclick="aiAsk(this.textContent)">Buxoroda eng yaxshi mehmonxona?</span>
+          <span class="ai-sug" onclick="aiAsk(this.textContent)">Xiva tarixi haqida gapiring</span>
+          <span class="ai-sug" onclick="aiAsk(this.textContent)">O'zbekiston uchun eng yaxshi fasl?</span>
+        </div>
+        <div class="ai-input-row">
+          <input class="ai-input" id="ai-input" data-i18n-placeholder="ai.placeholder" placeholder="Savol bering..." onkeydown="if(event.key==='Enter')sendAI()">
+          <button class="ai-send" onclick="sendAI()" data-i18n="ai.send">Yuborish</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div class="page" id="page-profile">
+  <div class="profile-hero">
+    <div class="profile-avatar" id="profile-avatar">U</div>
+    <div class="profile-name" id="profile-name">Foydalanuvchi</div>
+    <div class="profile-email" id="profile-email"></div>
+  </div>
+  <div class="profile-tabs">
+    <button class="profile-tab active" onclick="switchProfileTab('favorites',this)">❤️ <span data-i18n="profile.favs">Sevimlilar</span></button>
+    <button class="profile-tab" onclick="switchProfileTab('leaderboard',this)">🏆 Reyting</button>
+    <button class="profile-tab" onclick="switchProfileTab('settings',this)">⚙️ <span data-i18n="profile.settings">Sozlamalar</span></button>
+  </div>
+  <div class="profile-content">
+    <div class="profile-section active" id="tab-favorites">
+      <div id="user-level-card" style="margin-bottom:20px;"></div>
+      <div class="fav-grid" id="favs-list"><div class="empty"><div class="empty-icon">💛</div><h3 data-i18n="profile.noFavs">Sevimlilar yo'q</h3></div></div>
+    </div>
+    <div class="profile-section" id="tab-leaderboard">
+      <h3 style="font-family:'Playfair Display',serif;margin-bottom:16px;">🏆 Top Sayohatchilar</h3>
+      <div id="leaderboard-list" style="display:grid;gap:8px;max-width:500px;"><div class="loader"><div class="spinner"></div></div></div>
+    </div>
+    <div class="profile-section" id="tab-settings">
+      <div style="display:grid;gap:18px;max-width:480px;">
+        <div class="form-group"><label data-i18n="profile.name">Ism</label><input class="form-input" id="set-name" type="text"></div>
+        <div class="form-group"><label>Email</label><input class="form-input" id="set-email" type="email"></div>
+        <button class="save-btn" onclick="saveProfile()" data-i18n="common.save">Saqlash</button>
+        <button style="padding:11px 24px;background:#ffeaea;color:#d43c3c;border:none;border-radius:10px;font-weight:600;cursor:pointer;" onclick="logout()" data-i18n="profile.logout">Chiqish</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <div class="admin-header"><h1>Admin panel</h1><p>Exploria boshqaruv paneli</p></div>
+  <div class="admin-tabs">
+    <button class="admin-tab active" onclick="switchAdminTab('dashboard',this)">📊 Dashboard</button>
+    <button class="admin-tab" onclick="switchAdminTab('admin-hotels',this)">🏨 Mehmonxonalar</button>
+    <button class="admin-tab" onclick="switchAdminTab('admin-audio',this)">🎧 Audio</button>
+    <button class="admin-tab" onclick="switchAdminTab('admin-places',this)">📍 Joylar</button>
+    <button class="admin-tab" onclick="switchAdminTab('admin-legends',this)">📖 Afsonalar</button>
+    <button class="admin-tab" onclick="switchAdminTab('admin-best',this)">🏆 Eng sara</button>
+    <button class="admin-tab" onclick="switchAdminTab('admin-museums',this)">🏛️ Muzeylar</button>
+    <button class="admin-tab" onclick="switchAdminTab('admin-phrases',this)">💬 Iboralar</button>
+    <button class="admin-tab" onclick="switchAdminTab('admin-users',this)">👥 Foydalanuvchilar</button>
+  </div>
+  <div class="admin-section active" id="tab-dashboard">
+    <div class="admin-stats">
+      <div class="admin-stat"><div class="admin-stat-num" id="a-hotels">—</div><div class="admin-stat-label">Mehmonxonalar</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" id="a-audio">—</div><div class="admin-stat-label">Audio gidlar</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" id="a-places">—</div><div class="admin-stat-label">Joylar</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" id="a-legends">—</div><div class="admin-stat-label">Afsonalar</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" id="a-best">—</div><div class="admin-stat-label">Eng sara</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" id="a-museums">—</div><div class="admin-stat-label">Muzeylar</div></div>
+      <div class="admin-stat"><div class="admin-stat-num" id="a-users">—</div><div class="admin-stat-label">Foydalanuvchilar</div></div>
+    </div>
+  </div>
+  <div class="admin-section" id="tab-admin-hotels"><button class="add-btn" onclick="openModal('hotel')">+ Mehmonxona qo'shish</button><div id="admin-hotels-table"></div></div>
+  <div class="admin-section" id="tab-admin-audio"><button class="add-btn" onclick="openModal('audio')">+ Audio gid qo'shish</button><div id="admin-audio-table"></div></div>
+  <div class="admin-section" id="tab-admin-places"><button class="add-btn" onclick="openModal('place')">+ Joy qo'shish</button><div id="admin-places-table"></div></div>
+  <div class="admin-section" id="tab-admin-legends"><button class="add-btn" onclick="openModal('legend')">+ Afsona qo'shish</button><div id="admin-legends-table"></div></div>
+  <div class="admin-section" id="tab-admin-best"><button class="add-btn" onclick="openModal('best')">+ Eng sara qo'shish</button><div id="admin-best-table"></div></div>
+  <div class="admin-section" id="tab-admin-museums">
+  <button class="add-btn" onclick="openModal('museum')">+ Muzey qo'shish</button>
+  <div id="admin-museums-table"></div>
+</div>
+<div class="admin-section" id="tab-admin-phrases">
+  <div style="background:#fff;border-radius:16px;padding:20px;border:1px solid var(--border);">
+    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:16px;">Iboralar to'g'ridan-to'g'ri kodda saqlanadi. Yangi ibora qo'shish uchun dasturchi kerak.</p>
+    <div style="display:grid;gap:10px;" id="admin-phrases-list"></div>
+  </div>
+</div>
+<div class="admin-section" id="tab-admin-users"><div id="admin-users-table"></div></div>
+</div>
+
+
+
+<!-- MUSEUMS PAGE -->
+<div class="page" id="page-museums">
+  <div class="page-hero">
+    <h2>🏛️ O'zbekiston Muzeylari</h2>
+    <p>Viloyat muzeylari va uy muzeylari — tarix, san'at va madaniyat</p>
+  </div>
+  <div style="background:#fff;border-bottom:1px solid var(--border);padding:0 40px;">
+    <div style="display:flex;gap:6px;overflow-x:auto;padding:14px 0;white-space:nowrap;">
+      <button class="map-filter-btn active" onclick="filterMuseums('all',this)">Hammasi</button>
+      <button class="map-filter-btn" onclick="filterMuseums('Toshkent',this)">Toshkent</button>
+      <button class="map-filter-btn" onclick="filterMuseums('Samarqand',this)">Samarqand</button>
+      <button class="map-filter-btn" onclick="filterMuseums('Buxoro',this)">Buxoro</button>
+      <button class="map-filter-btn" onclick="filterMuseums('Xorazm',this)">Xorazm</button>
+      <button class="map-filter-btn" onclick="filterMuseums('Farg'ona',this)">Farg'ona</button>
+      <button class="map-filter-btn" onclick="filterMuseums('Qoraqalpog'iston',this)">Qoraqalpog'iston</button>
+      <button class="map-filter-btn" onclick="filterMuseums('Uy muzeyi',this)">🏠 Uy muzeylari</button>
+      <button class="map-filter-btn" onclick="filterMuseums('San'at',this)">🎨 San'at</button>
+      <button class="map-filter-btn" onclick="filterMuseums('Arxeologiya',this)">⛏️ Arxeologiya</button>
+    </div>
+  </div>
+  <div class="section">
+    <div class="cards-grid" id="museums-list"><div class="loader"><div class="spinner"></div></div></div>
+  </div>
+</div>
+<!-- CURRENCY PAGE -->
+<div class="page" id="page-currency">
+  <div class="page-hero"><h2 data-i18n="currency.title">💱 Valyuta Kalkulyator</h2><p data-i18n="currency.subtitle">Real vaqtdagi kurs — USD, EUR, RUB, CNY va boshqalar</p></div>
+  <div class="section">
+    <div style="max-width:600px;margin:0 auto;">
+      <div style="background:#fff;border-radius:20px;padding:32px;box-shadow:var(--shadow);border:1px solid var(--border);">
+        <div style="display:grid;gap:20px;">
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:600;color:var(--muted);" data-i18n="currency.amount">Miqdor</label>
+            <input class="form-input" id="curr-amount" type="number" value="100" oninput="calcCurrency()" style="font-size:1.2rem;font-weight:700;">
+          </div>
+          <div class="form-group">
+            <label style="font-size:0.85rem;font-weight:600;color:var(--muted);" data-i18n="currency.from">Valyuta</label>
+            <select id="curr-from" onchange="calcCurrency()" style="padding:12px 16px;border:1px solid var(--border);border-radius:10px;font-size:1rem;outline:none;background:#fff;">
+              <option value="USD">🇺🇸 USD — Dollar</option>
+              <option value="EUR">🇪🇺 EUR — Euro</option>
+              <option value="RUB">🇷🇺 RUB — Rubl</option>
+              <option value="CNY">🇨🇳 CNY — Yuan</option>
+              <option value="GBP">🇬🇧 GBP — Funt</option>
+              <option value="KZT">🇰🇿 KZT — Tenge</option>
+            </select>
+          </div>
+        </div>
+        <div style="text-align:center;margin:28px 0;">
+          <div style="font-size:0.85rem;color:var(--muted);margin-bottom:8px;">= O'zbek so'mi</div>
+          <div id="curr-result" style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:var(--orange);">—</div>
+          <div id="curr-rate" style="color:var(--muted);font-size:0.85rem;margin-top:8px;"></div>
+          <div id="curr-updated" style="color:var(--muted);font-size:0.75rem;margin-top:4px;"></div>
+        </div>
+        <div style="background:#fff4ee;border-radius:12px;padding:16px;">
+          <div style="font-weight:600;font-size:0.88rem;margin-bottom:12px;color:var(--orange);">Barcha kurslar (1 birlik = so'm)</div>
+          <div id="all-rates" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PHRASES PAGE -->
+<div class="page" id="page-phrases">
+  <div class="page-hero"><h2 data-i18n="phrases.title">💬 Foydali Iboralar</h2><p data-i18n="phrases.subtitle">Turistlar uchun eng kerakli so'z va iboralar</p></div>
+  <div class="section">
+    <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;">
+      <button class="map-filter-btn active" onclick="filterPhrases('all',this)" data-i18n="phrases.all">Hammasi</button>
+      <button class="map-filter-btn" onclick="filterPhrases('greet',this)" data-i18n="phrases.greet">Salomlashish</button>
+      <button class="map-filter-btn" onclick="filterPhrases('food',this)" data-i18n="phrases.food">Ovqat</button>
+      <button class="map-filter-btn" onclick="filterPhrases('transport',this)" data-i18n="phrases.transport">Transport</button>
+      <button class="map-filter-btn" onclick="filterPhrases('hotel',this)" data-i18n="phrases.hotel">Mehmonxona</button>
+      <button class="map-filter-btn" onclick="filterPhrases('emergency',this)" data-i18n="phrases.emergency">Favqulodda</button>
+    </div>
+    <div id="phrases-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;"></div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal" style="max-width:400px;">
+    <button onclick="closeModal('auth-modal')" style="position:absolute;top:14px;right:18px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);">×</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuth('login',this)" data-i18n="auth.login">Kirish</button>
+      <button class="auth-tab" onclick="switchAuth('register',this)" data-i18n="auth.register">Ro'yxatdan o'tish</button>
+    </div>
+    <div id="auth-login">
+      <div class="auth-form">
+        <input type="email" id="login-email" placeholder="Email">
+        <input type="password" id="login-pass" data-i18n-placeholder="auth.password" placeholder="Parol">
+        <div class="auth-error" id="login-err"></div>
+        <button class="auth-submit" onclick="doLogin()" data-i18n="auth.login">Kirish</button>
+      </div>
+    </div>
+    <div id="auth-register" style="display:none">
+      <div class="auth-form">
+        <input type="text" id="reg-name" data-i18n-placeholder="auth.name" placeholder="Ismingiz">
+        <input type="email" id="reg-email" placeholder="Email">
+        <input type="password" id="reg-pass" data-i18n-placeholder="auth.password6" placeholder="Parol (min 6 ta belgi)">
+        <div class="auth-error" id="reg-err"></div>
+        <button class="auth-submit" onclick="doRegister()" data-i18n="auth.register">Ro'yxatdan o'tish</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ITEM MODAL -->
+<div class="modal-overlay" id="item-modal">
+  <div class="modal">
+    <button onclick="closeModal('item-modal')" style="position:absolute;top:14px;right:18px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);">×</button>
+    <h3 id="modal-title">Qo'shish</h3>
+    <div class="modal-grid" id="modal-fields"></div>
+    <div class="modal-actions">
+      <button class="cancel-btn" onclick="closeModal('item-modal')">Bekor</button>
+      <button class="submit-btn" onclick="saveItem()">Saqlash</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- REVIEW MODAL -->
+<div class="modal-overlay" id="review-modal">
+  <div class="modal" style="max-width:520px;">
+    <button onclick="closeModal('review-modal')" style="position:absolute;top:14px;right:18px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);">×</button>
+    <h3 id="review-item-name" style="margin-bottom:18px;font-size:1.2rem;"></h3>
+    <div class="review-form">
+      <div style="font-size:0.85rem;font-weight:600;color:var(--muted);margin-bottom:8px;">Reytingingiz:</div>
+      <div class="star-select">
+        <span onclick="updateStars(1)">★</span>
+        <span onclick="updateStars(2)">★</span>
+        <span onclick="updateStars(3)">★</span>
+        <span onclick="updateStars(4)">★</span>
+        <span onclick="updateStars(5)">★</span>
+      </div>
+      <textarea id="review-text-input" rows="3" placeholder="Fikringizni yozing..."></textarea>
+      <button class="review-submit" onclick="submitReview()">Yuborish</button>
+    </div>
+    <div class="reviews-section">
+      <div class="reviews-title">Fikrlar</div>
+      <div id="reviews-list"></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ CONFIG ============
+const SUPA_URL = "https://lejxipnzmowetxxskjrk.supabase.co";
+const SUPA_KEY = "sb_publishable_3xTnXyjdYl93gJcWIRZvLg_Mmru2yrf";
+
+
+// ============ I18N ============
+const LANGS = {
+  uz: {
+    'nav.home':'Bosh sahifa','nav.hotels':'Mehmonxonalar','nav.audio':'Audio gidlar',
+    'nav.places':'Joylar','nav.legends':'Afsonalar','nav.best':'Eng sara',
+    'nav.map':'Xarita','nav.ai':'AI gid','nav.login':'Kirish',
+    'hero.tag':'O\'ZBEKISTON SAYOHATI','hero.title':'O\'zbekistonni <span>kashf eting</span>',
+    'hero.subtitle':'Audio gidlar, ajoyib mehmonxonalar va yashirin joylar — barchasi bir joyda.',
+    'hero.search':'Shahar, joy yoki mehmonxona qidiring...','hero.searchBtn':'Qidirish',
+    'hotels.subtitle':'O\'zbekiston bo\'ylab eng yaxshi mehmonxonalar',
+    'hotels.allCities':'Barcha shaharlar','hotels.allStars':'Yulduzlar',
+    'audio.subtitle':'Sayohatingizni boyiting — audio bilan',
+    'places.subtitle':'Tarixiy, madaniy va yashirin joylar',
+    'legends.subtitle':'O\'zbekistonning qadimiy sirlari va tarixiy hikoyalar',
+    'best.subtitle':'Rekordlar, noyob joylar va qiziqarli faktlar',
+    'map.all':'Hammasi','map.hotels':'🏨 Mehmonxonalar','map.places':'📍 Joylar',
+    'ai.title':'AI Sayohat Gidi','ai.subtitle':'O\'zbekiston bo\'ylab sayohat rejangizni tuzishda yordam beraman',
+    'ai.placeholder':'Savol bering...','ai.send':'Yuborish',
+    'ai.welcome':'Salom! Men Exploria AI gidiman. O\'zbekistondagi sayohat, mehmonxonalar, tarixiy joylar haqida savol bering! 🏔️',
+    'profile.favs':'Sevimlilar','profile.settings':'Sozlamalar','profile.name':'Ism',
+    'profile.noFavs':'Sevimlilar yo\'q','profile.logout':'Chiqish',
+    'auth.login':'Kirish','auth.register':'Ro\'yxatdan o\'tish',
+    'auth.password':'Parol','auth.name':'Ismingiz','auth.password6':'Parol (min 6 ta belgi)',
+    'common.save':'Saqlash','common.seeAll':'Barchasi →','common.search':'Qidirish...',
+    'book':'Bron qilish','bookSoon':'bron qilish tez kunda!',
+    'noAudio':'Audio fayl yuklanmagan','noResult':'Hech narsa topilmadi 😕',
+    'nav.currency':'💱 Valyuta','nav.phrases':'💬 Iboralar',
+    'currency.title':'Valyuta Kalkulyator','currency.subtitle':'Real vaqtdagi kurs',
+    'currency.amount':'Miqdor','currency.from':'Valyuta','currency.allRates':'Barcha kurslar',
+    'currency.updated':'Kurs yangilandi','currency.offline':'Taxminiy kurs (oflayn)',
+    'phrases.title':'Foydali Iboralar','phrases.subtitle':"Turistlar uchun eng kerakli so'z va iboralar",
+    'phrases.all':'Hammasi','phrases.greet':'Salomlashish','phrases.food':'Ovqat',
+    'phrases.transport':'Transport','phrases.hotel':'Mehmonxona','phrases.emergency':'Favqulodda',
+    'phrases.copy':'Nusxa'
+  },
+  en: {
+    'nav.home':'Home','nav.hotels':'Hotels','nav.audio':'Audio Guides',
+    'nav.places':'Places','nav.legends':'Legends','nav.best':'Best of UZ',
+    'nav.map':'Map','nav.ai':'AI Guide','nav.login':'Sign In',
+    'hero.tag':'UZBEKISTAN TRAVEL','hero.title':'Discover <span>Uzbekistan</span>',
+    'hero.subtitle':'Audio guides, amazing hotels and hidden places — all in one place.',
+    'hero.search':'Search city, place or hotel...','hero.searchBtn':'Search',
+    'hotels.subtitle':'Best hotels across Uzbekistan',
+    'hotels.allCities':'All cities','hotels.allStars':'Stars',
+    'audio.subtitle':'Enrich your journey with audio',
+    'places.subtitle':'Historical, cultural and hidden places',
+    'legends.subtitle':'Ancient secrets and historical stories of Uzbekistan',
+    'best.subtitle':'Records, unique places and interesting facts',
+    'map.all':'All','map.hotels':'🏨 Hotels','map.places':'📍 Places',
+    'ai.title':'AI Travel Guide','ai.subtitle':'I help you plan your trip across Uzbekistan',
+    'ai.placeholder':'Ask a question...','ai.send':'Send',
+    'ai.welcome':'Hello! I\'m the Exploria AI guide. Ask me about travel, hotels, and historical sites in Uzbekistan! 🏔️',
+    'profile.favs':'Favorites','profile.settings':'Settings','profile.name':'Name',
+    'profile.noFavs':'No favorites yet','profile.logout':'Sign Out',
+    'auth.login':'Sign In','auth.register':'Sign Up',
+    'auth.password':'Password','auth.name':'Your name','auth.password6':'Password (min 6 chars)',
+    'common.save':'Save','common.seeAll':'See all →','common.search':'Search...',
+    'book':'Book Now','bookSoon':'booking coming soon!',
+    'noAudio':'No audio file uploaded','noResult':'Nothing found 😕',
+    'nav.currency':'💱 Currency','nav.phrases':'💬 Phrases',
+    'currency.title':'Currency Calculator','currency.subtitle':'Real-time exchange rates',
+    'currency.amount':'Amount','currency.from':'Currency','currency.allRates':'All rates',
+    'currency.updated':'Rates updated','currency.offline':'Approximate rate (offline)',
+    'phrases.title':'Useful Phrases','phrases.subtitle':'Most needed words and phrases for tourists',
+    'phrases.all':'All','phrases.greet':'Greetings','phrases.food':'Food',
+    'phrases.transport':'Transport','phrases.hotel':'Hotel','phrases.emergency':'Emergency',
+    'phrases.copy':'Copy'
+  }
+};
+
+let lang = localStorage.getItem('exploria_lang') || 'uz';
+function t(key) { return LANGS[lang][key] || LANGS['uz'][key] || key; }
+
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobile-menu');
+  menu.classList.toggle('open');
+}
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+}
+// Close mobile menu on outside click
+document.addEventListener('click', e => {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('hamburger-btn');
+  if(menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+
+function toggleLang() {
+  lang = lang === 'uz' ? 'en' : 'uz';
+  localStorage.setItem('exploria_lang', lang);
+  document.querySelector('.lang-btn').textContent = lang === 'uz' ? 'EN' : 'UZ';
+  document.getElementById('html-root').lang = lang;
+  applyI18n();
+  renderAll();
+}
+function applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.dataset.i18nPlaceholder); });
+  document.getElementById('ai-welcome').textContent = t('ai.welcome');
+}
+
+// ============ STATE ============
+let currentUser = null;
+let allHotels=[], allAudio=[], allPlaces=[], allLegends=[], allBest=[];
+let mapInstance=null, mapMarkers=[], routeLayer=null;
+let editingId=null, editingType=null;
+let favorites = JSON.parse(localStorage.getItem('exploria_favs')||'[]');
+
+// ============ API ============
+async function api(table, opts={}) {
+  const {method='GET',body,filter=''} = opts;
+  const url = `${SUPA_URL}/rest/v1/${table}${filter}`;
+  // For read operations use anon key, for write use user token
+  const token = (method!=='GET' && currentUser?.token) ? currentUser.token : SUPA_KEY;
+  const headers = {
+    'apikey':SUPA_KEY,
+    'Authorization':`Bearer ${token}`,
+    'Content-Type':'application/json',
+    'Prefer': method==='POST'?'return=representation':''
+  };
+  const res = await fetch(url,{method,headers,body:body?JSON.stringify(body):undefined});
+  if(!res.ok) {
+    const errText = await res.text();
+    // If JWT expired, clear user and retry with anon key
+    if(errText.includes('JWT') || errText.includes('expired')) {
+      currentUser = null;
+      localStorage.removeItem('exploria_user');
+      updateNavUser();
+      // Retry with anon key
+      const res2 = await fetch(url,{method,headers:{...headers,'Authorization':`Bearer ${SUPA_KEY}`},body:body?JSON.stringify(body):undefined});
+      if(!res2.ok) throw new Error(await res2.text());
+      const t2 = await res2.text();
+      return t2 ? JSON.parse(t2) : null;
+    }
+    throw new Error(errText);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+async function authApi(path, body) {
+  const res = await fetch(`${SUPA_URL}/auth/v1${path}`,{
+    method:'POST',
+    headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify(body)
+  });
+  const data = await res.json();
+  if(!res.ok) throw new Error(data.error_description||data.msg||'Xatolik');
+  return data;
+}
+
+// ============ INIT ============
+async function init() {
+  const stored = localStorage.getItem('exploria_user');
+  if(stored) { currentUser=JSON.parse(stored); updateNavUser(); }
+  document.querySelector('.lang-btn').textContent = lang==='uz'?'EN':'UZ';
+  applyI18n();
+  await loadAll();
+  loadNavWeather();
+}
+async function loadAll() {
+  try {
+    [allHotels,allAudio,allPlaces,allLegends,allBest] = await Promise.all([
+      api('hotels',{filter:'?select=*&order=id.asc'}),
+      api('audio_guides',{filter:'?select=*&order=id.asc'}),
+      api('places',{filter:'?select=*&order=id.asc'}),
+      api('legends',{filter:'?select=*&order=id.asc'}),
+      api('uzbekistan_best',{filter:'?select=*&order=rank.asc'})
+    ]);
+    renderAll();
+    updateStats();
+  } catch(e) { showToast('Xato: '+e.message); }
+}
+function renderAll() {
+  renderHome();
+  renderHotelsList(allHotels);
+  renderAudioList(allAudio);
+  renderPlacesList(allPlaces);
+  renderLegendsList(allLegends);
+  renderBestList(allBest);
+}
+function updateStats() {
+  document.getElementById('stat-hotels').textContent=allHotels.length;
+  document.getElementById('stat-audio').textContent=allAudio.length;
+  document.getElementById('stat-places').textContent=allPlaces.length;
+  document.getElementById('a-hotels').textContent=allHotels.length;
+  document.getElementById('a-audio').textContent=allAudio.length;
+  document.getElementById('a-places').textContent=allPlaces.length;
+  document.getElementById('a-legends').textContent=allLegends.length;
+  document.getElementById('a-best').textContent=allBest.length;
+}
+
+// ============ RENDER ============
+function renderHome() {
+  document.getElementById('home-hotels').innerHTML = allHotels.slice(0,3).map(hotelCard).join('')||emptyHtml('🏨');
+  document.getElementById('home-audio').innerHTML = allAudio.slice(0,3).map(audioCard).join('')||emptyHtml('🎧');
+  document.getElementById('home-legends').innerHTML = allLegends.slice(0,3).map(legendCard).join('')||emptyHtml('📖');
+}
+
+function hotelCard(h) {
+  const stars='⭐'.repeat(Math.min(h.stars||0,5));
+  const ams=Array.isArray(h.amenities)?h.amenities:(h.amenities?JSON.parse(h.amenities):[]);
+  const isFav=favorites.includes('hotel_'+h.id);
+  const grads=['#ff5500,#ff7733','#c44d00,#ff5500','#ff7733,#ffaa00','#b84500,#ff5500','#e06000,#f5a623'];
+  const grad=grads[h.id%grads.length];
+  return `<div class="hotel-card">
+    <div class="hotel-img" style="background:linear-gradient(135deg,${grad});position:relative;">
+      ${h.image_url ? `<img src="${h.image_url}" alt="${esc(h.name)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:0;" loading="lazy" onerror="this.style.display='none'">` : ''}
+      <span style="position:relative;z-index:1;text-shadow:0 2px 8px rgba(0,0,0,0.5)">${h.emoji||'🏨'}</span>
+      <span class="hotel-stars" style="position:relative;z-index:1;">${stars}</span>
+    </div>
+    <div class="hotel-body">
+      <div style="display:flex;justify-content:space-between;align-items:start">
+        <div class="hotel-name">${esc(h.name)}</div>
+        <button onclick="toggleFav('hotel_${h.id}','${esc(h.name)}','hotel',event)" style="background:none;border:none;font-size:1.2rem;cursor:pointer;">${isFav?'❤️':'🤍'}</button>
+      </div>
+      <div class="hotel-loc">📍 ${esc(h.location)}</div>
+      <div class="hotel-amenities">${ams.slice(0,4).map(a=>`<span class="amenity">${esc(a)}</span>`).join('')}</div>
+      <div class="hotel-footer">
+        <div class="hotel-price">${h.price||0}$ <span>/ kecha</span></div>
+        <span class="hotel-badge">${esc(h.badge||'Standart')}</span>
+      </div>
+      <button class="book-btn" onclick="showToast('${esc(h.name)} — ${t('bookSoon')}');if(currentUser)addPoints(currentUser.id,50,'booking');">${t('book')}</button>
+      <button onclick="openReviews('hotel',${h.id},'${esc(h.name)}')" style="width:100%;margin-top:8px;padding:9px;background:#fff4ee;color:var(--orange);border:1px solid var(--border);border-radius:10px;font-weight:600;cursor:pointer;font-size:0.85rem;">⭐ Fikrlar</button>
+    </div>
+  </div>`;
+}
+
+function audioCard(g) {
+  const id='ap_'+g.id;
+  return `<div class="audio-card">
+    <div class="audio-header">
+      <div class="audio-emoji">${g.emoji||'🎧'}</div>
+      <div>
+        <div class="audio-title">${esc(g.title)}</div>
+        <div class="audio-meta">📂 ${esc(g.category)} · 📍 ${esc(g.location)} · ⏱ ${esc(g.duration||'—')}</div>
+      </div>
+    </div>
+    <div class="audio-player">
+      ${g.audio_url?`
+      <audio id="${id}" src="${g.audio_url}" preload="none"></audio>
+      <div class="audio-controls">
+        <button class="play-btn" onclick="toggleAudio('${id}',this)">▶</button>
+        <div class="audio-progress" onclick="seekAudio('${id}',event)"><div class="audio-bar" id="bar_${id}"></div></div>
+        <span class="audio-time" id="time_${id}">0:00</span>
+      </div>`:`<div style="color:var(--muted);font-size:0.83rem;text-align:center;padding:8px">🎵 ${t('noAudio')}</div>`}
+    </div>
+    <button onclick="openReviews('audio',${g.id},'${esc(g.title)}')" style="width:100%;padding:8px;background:#fff4ee;color:var(--orange);border:1px solid var(--border);border-radius:10px;font-weight:600;cursor:pointer;font-size:0.82rem;">⭐ Fikrlar</button>
+  </div>`;
+}
+
+function placeCard(p) {
+  const isFav=favorites.includes('place_'+p.id);
+  const stars=p.rating?'★'.repeat(Math.round(p.rating))+'☆'.repeat(5-Math.round(p.rating)):'—';
+  return `<div class="place-card" onclick="openPlaceOnMap(${p.id})">
+    <div class="place-thumb" style="background:linear-gradient(135deg,#2d1810,#3d2010);">
+      <span>${p.emoji||'📍'}</span>
+      <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.5);color:#fff;padding:3px 10px;border-radius:20px;font-size:0.73rem;">🗺️</div>
+    </div>
+    <div class="place-info">
+      <div style="display:flex;justify-content:space-between;">
+        <div class="place-name">${esc(p.name)}</div>
+        <button onclick="toggleFav('place_${p.id}','${esc(p.name)}','place',event)" style="background:none;border:none;font-size:1rem;cursor:pointer;">${isFav?'❤️':'🤍'}</button>
+      </div>
+      <div class="place-cat">🏷 ${esc(p.category)} · 📍 ${esc(p.location)}</div>
+      <div class="place-rating"><span class="stars-row">${stars}</span> <span style="font-weight:700;font-size:0.87rem;">${p.rating||'—'}</span></div>
+      ${p.is_hidden?'<span class="hidden-badge">✨ Yashirin joy</span>':''}
+      <button onclick="openReviews('place',${p.id},'${esc(p.name)}');event.stopPropagation();" style="width:100%;margin-top:10px;padding:8px;background:#fff4ee;color:var(--orange);border:1px solid var(--border);border-radius:10px;font-weight:600;cursor:pointer;font-size:0.82rem;">⭐ Fikrlar</button>
+    </div>
+  </div>`;
+}
+
+function legendCard(l) {
+  const story = lang==='en' && l.story_en ? l.story_en : l.story;
+  const img = l.image_url || '';
+  return `<div class="legend-card" style="padding:0;overflow:hidden;">
+    ${img ? `<div style="height:200px;overflow:hidden;border-radius:20px 20px 0 0;"><img src="${img}" alt="${esc(l.title)}" style="width:100%;height:100%;object-fit:cover;" loading="lazy" onerror="this.parentNode.style.display='none'"></div>` : ''}
+    <div style="padding:20px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <span style="font-size:1.8rem;">${l.emoji||'📖'}</span>
+        <div>
+          <div class="legend-title" style="margin-bottom:2px;">${esc(l.title)}</div>
+          <div class="legend-loc">📍 ${esc(l.location)}</div>
+        </div>
+      </div>
+      <div class="legend-story" id="ls_${l.id}" style="display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px;">${esc(story)}</div>
+      <button onclick="toggleLegend(${l.id},this,'${lang}')" style="background:none;border:none;color:var(--orange);font-size:0.82rem;font-weight:600;cursor:pointer;padding:4px 0;">Ko'proq o'qish ↓</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:8px;">
+        <span class="legend-cat">${esc(l.category||'Tarix')}</span>
+        <button onclick="openReviews('legend',${l.id},'${esc(l.title)}')" style="padding:5px 14px;background:#fff4ee;color:var(--orange);border:1px solid var(--border);border-radius:20px;font-weight:600;cursor:pointer;font-size:0.78rem;">⭐ Fikrlar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleLegend(id, btn, lng) {
+  const el = document.getElementById('ls_'+id);
+  const isCollapsed = el.style.webkitLineClamp !== 'unset' && el.style.webkitLineClamp !== '';
+  if(isCollapsed || el.style.webkitLineClamp === '') {
+    el.style.webkitLineClamp = 'unset';
+    el.style.overflow = 'visible';
+    el.style.display = 'block';
+    btn.textContent = lng==='en' ? "Show less ↑" : "Yig'ish ↑";
+  } else {
+    el.style.webkitLineClamp = '4';
+    el.style.overflow = 'hidden';
+    el.style.display = '-webkit-box';
+    btn.textContent = lng==='en' ? "Read more ↓" : "Ko'proq o'qish ↓";
+  }
+}
+
+function renderLegendsList(legends) {
+  document.getElementById('legends-list').innerHTML = legends.length ? legends.map(legendCard).join('') : emptyHtml('📖');
+}
+
+function renderBestList(best) {
+  const el = document.getElementById('best-list');
+  if(!best.length){el.innerHTML=emptyHtml('🏆');return;}
+  el.innerHTML = `<div style="display:grid;gap:16px;max-width:800px;">` +
+    best.map(b=>`<div class="best-card">
+      <div class="best-rank ${b.rank<=3?'top3':''}">#${b.rank}</div>
+      <div class="best-content">
+        <div class="best-title">${b.emoji||'🏆'} ${esc(b.title)}</div>
+        <div class="best-desc">${esc(b.description)}</div>
+        <div class="best-loc">📍 ${esc(b.location)} · ${esc(b.category)}</div>
+      <button onclick="openReviews('best',${b.id},'${esc(b.title)}')" style="margin-top:10px;padding:6px 16px;background:#fff4ee;color:var(--orange);border:1px solid var(--border);border-radius:20px;font-weight:600;cursor:pointer;font-size:0.8rem;">⭐ Fikrlar</button>
+    </div>
+    </div>`).join('') + '</div>';
+}
+
+function renderHotelsList(hotels) {
+  const el=document.getElementById('hotels-list');
+  el.innerHTML = hotels.length ? hotels.map(hotelCard).join('') : emptyHtml('🏨');
+}
+function renderAudioList(audio) {
+  document.getElementById('audio-list').innerHTML = audio.length ? audio.map(audioCard).join('') : emptyHtml('🎧');
+}
+function renderPlacesList(places) {
+  document.getElementById('places-list').innerHTML = places.length ? places.map(placeCard).join('') : emptyHtml('📍');
+}
+function emptyHtml(icon) { return `<div class="empty"><div class="empty-icon">${icon}</div><h3>${t('noResult')}</h3></div>`; }
+
+// ============ SEARCH ============
+function doSearch(q) {
+  if(!q.trim()) return;
+  const lq=q.toLowerCase();
+  const hotels=allHotels.filter(h=>h.name?.toLowerCase().includes(lq)||h.location?.toLowerCase().includes(lq));
+  const places=allPlaces.filter(p=>p.name?.toLowerCase().includes(lq)||p.location?.toLowerCase().includes(lq)||p.category?.toLowerCase().includes(lq));
+  const audio=allAudio.filter(a=>a.title?.toLowerCase().includes(lq)||a.location?.toLowerCase().includes(lq));
+  const legends=allLegends.filter(l=>l.title?.toLowerCase().includes(lq)||l.location?.toLowerCase().includes(lq));
+  const museums=allMuseums.filter(m=>m.name?.toLowerCase().includes(lq)||m.region?.toLowerCase().includes(lq)||m.category?.toLowerCase().includes(lq));
+  if(hotels.length){renderHotelsList(hotels);showPage('hotels');}
+  else if(museums.length){renderMuseums(museums);showPage('museums');}
+  else if(places.length){renderPlacesList(places);showPage('places');}
+  else if(audio.length){renderAudioList(audio);showPage('audio');}
+  else if(legends.length){renderLegendsList(legends);showPage('legends');}
+  else{showToast(t('noResult'));}
+}
+
+function applyHotelFilters() {
+  const q=document.getElementById('hotel-search').value.toLowerCase();
+  const city=document.getElementById('hotel-city').value.toLowerCase();
+  const stars=document.getElementById('hotel-stars').value;
+  let res=allHotels;
+  if(q) res=res.filter(h=>h.name?.toLowerCase().includes(q)||h.location?.toLowerCase().includes(q));
+  if(city) res=res.filter(h=>h.location?.toLowerCase().includes(city));
+  if(stars) res=res.filter(h=>h.stars==parseInt(stars));
+  renderHotelsList(res);
+}
+
+// ============ AUDIO ============
+let currentAudio=null;
+function toggleAudio(id,btn) {
+  const el=document.getElementById(id);
+  if(!el) return;
+  if(currentAudio&&currentAudio!==el){currentAudio.pause();document.getElementById('btn_'+currentAudio.id)?.textContent=='⏸'&&(document.getElementById('btn_'+currentAudio.id).textContent='▶');}
+  if(el.paused){
+    el.play(); btn.textContent='⏸'; currentAudio=el;
+    el.ontimeupdate=()=>{
+      const pct=el.duration?(el.currentTime/el.duration*100):0;
+      const bar=document.getElementById('bar_'+id);
+      const time=document.getElementById('time_'+id);
+      if(bar) bar.style.width=pct+'%';
+      if(time) time.textContent=fmt(el.currentTime);
+    };
+  } else {el.pause();btn.textContent='▶';}
+}
+function seekAudio(id,e) {
+  const el=document.getElementById(id);
+  if(!el||!el.duration) return;
+  const rect=e.currentTarget.getBoundingClientRect();
+  el.currentTime=((e.clientX-rect.left)/rect.width)*el.duration;
+}
+function fmt(s){return Math.floor(s/60)+':'+(Math.floor(s%60)+'').padStart(2,'0');}
+
+// ============ MAP ============
+const UZ_LOCS={'Samarqand':[39.6547,66.9758],'Buxoro':[39.7681,64.4556],'Xiva':[41.3775,60.3619],'Toshkent':[41.2995,69.2401],'Toshkent viloyati':[41.3,69.5],'Qoraqalpog\'iston':[43.7,59.0],'Qashqadaryo':[38.8,66.0],'Chimyon':[41.55,69.97],'Surxondaryo':[37.9,67.6]};
+function getCoords(item) {
+  if(item.lat&&item.lng) return [parseFloat(item.lat),parseFloat(item.lng)];
+  for(const [k,v] of Object.entries(UZ_LOCS)){if((item.location||'').includes(k)) return v;}
+  return [41.0+Math.random()*0.5,63+Math.random()*8];
+}
+function initMap() {
+  if(mapInstance){setTimeout(()=>{mapInstance.invalidateSize();filterMap('all');},100);return;}
+  mapInstance=L.map('map').setView([41.0,63.0],6);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(mapInstance);
+  const locBtn=L.control({position:'topright'});
+  locBtn.onAdd=()=>{
+    const btn=L.DomUtil.create('button','');
+    btn.innerHTML='📍 '+(lang==='uz'?'Joylashuvim':'My location');
+    btn.style.cssText='padding:8px 14px;background:#ff5500;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.83rem;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.2)';
+    btn.onclick=()=>{
+      if(!navigator.geolocation) return showToast('Geolokatsiya ishlamaydi');
+      navigator.geolocation.getCurrentPosition(pos=>{
+        const {latitude:lat,longitude:lng}=pos.coords;
+        mapInstance.setView([lat,lng],14);
+        L.marker([lat,lng],{icon:L.divIcon({html:'<div style="background:#2563eb;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 4px rgba(37,99,235,0.3)"></div>',className:'',iconAnchor:[8,8]})}).addTo(mapInstance).bindPopup(lang==='uz'?'Siz shu yerdasiz':'You are here').openPopup();
+      });
+    };
+    return btn;
+  };
+  locBtn.addTo(mapInstance);
+  filterMap('all');
+}
+async function showRoute(destLat,destLng,name) {
+  if(!navigator.geolocation){window.open(`https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}`,'_blank');return;}
+  showToast(lang==='uz'?'Yo\'nalish hisoblanmoqda...':'Calculating route...');
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const {latitude:lat,longitude:lng}=pos.coords;
+    try {
+      const res=await fetch(`https://router.project-osrm.org/route/v1/driving/${lng},${lat};${destLng},${destLat}?overview=full&geometries=geojson`);
+      const data=await res.json();
+      if(data.code!=='Ok') throw new Error();
+      if(routeLayer) mapInstance.removeLayer(routeLayer);
+      routeLayer=L.geoJSON(data.routes[0].geometry,{style:{color:'#ff5500',weight:5,opacity:0.8}}).addTo(mapInstance);
+      mapInstance.fitBounds(routeLayer.getBounds(),{padding:[40,40]});
+      const dist=(data.routes[0].distance/1000).toFixed(1);
+      const mins=Math.round(data.routes[0].duration/60);
+      showToast(`${name} — ${dist} km, ~${mins} min`);
+    } catch(e){window.open(`https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}`,'_blank');}
+  },()=>{window.open(`https://www.google.com/maps/search/?api=1&query=${destLat},${destLng}`,'_blank');});
+}
+function filterMap(type,btn) {
+  document.querySelectorAll('.map-filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  mapMarkers.forEach(m=>mapInstance.removeLayer(m));
+  mapMarkers=[];
+  if(routeLayer){mapInstance.removeLayer(routeLayer);routeLayer=null;}
+  if(!mapInstance) return;
+  const items=[];
+  if(type==='all'||type==='hotel') allHotels.forEach(h=>items.push({...h,_type:'hotel'}));
+  if(type==='all'||type==='place') allPlaces.forEach(p=>items.push({...p,_type:'place'}));
+  items.forEach(item=>{
+    const coords=getCoords(item);
+    const color=item._type==='hotel'?'#ff5500':'#ffaa00';
+    const icon=L.divIcon({html:`<div style="background:${color};color:#fff;padding:6px 11px;border-radius:10px;font-size:0.76rem;font-weight:700;white-space:nowrap;box-shadow:0 3px 12px rgba(0,0,0,0.25);border:2px solid rgba(255,255,255,0.3)">${item.emoji||'📍'} ${item.name}</div>`,className:'',iconAnchor:[0,0]});
+    const m=L.marker(coords,{icon}).addTo(mapInstance);
+    const popup=`<div style="font-family:'DM Sans',sans-serif;min-width:190px;padding:4px">
+      <div style="font-size:1rem;font-weight:700;margin-bottom:5px">${item.emoji||'📍'} ${item.name}</div>
+      <div style="color:#666;font-size:0.82rem;margin-bottom:4px">📍 ${item.location||''}</div>
+      ${item.stars?`<div style="margin-bottom:4px">${'⭐'.repeat(item.stars)}</div>`:''}
+      ${item.price?`<div style="font-weight:700;color:#ff5500;margin-bottom:8px">${item.price}$/kecha</div>`:''}
+      <div style="display:flex;gap:7px;margin-top:9px">
+        <button onclick="showRoute(${coords[0]},${coords[1]},'${item.name.replace(/'/g,"\\'")}');L.popup().close();"
+          style="flex:1;padding:7px;background:#ff5500;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:600">🧭 Yo'nalish</button>
+        <button onclick="window.open('https://www.google.com/maps/search/?api=1&query=${coords[0]},${coords[1]}','_blank')"
+          style="flex:1;padding:7px;background:#4285f4;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:600">🗺️ Google</button>
+      </div></div>`;
+    m.bindPopup(popup,{maxWidth:260});
+    mapMarkers.push(m);
+  });
+}
+function openPlaceOnMap(placeId) {
+  const place=allPlaces.find(p=>p.id==placeId);
+  if(!place) return;
+  showPage('map');
+  setTimeout(()=>{
+    initMap();
+    setTimeout(()=>{
+      filterMap('all');
+      const coords=getCoords(place);
+      mapInstance.setView(coords,14);
+      mapMarkers.forEach(m=>{if(Math.abs(m.getLatLng().lat-coords[0])<0.01&&Math.abs(m.getLatLng().lng-coords[1])<0.01) m.openPopup();});
+    },300);
+  },150);
+}
+
+// ============ AI ============
+const AI_EDGE_URL = 'https://lejxipnzmowetxxskjrk.supabase.co/functions/v1/dynamic-responder';
+
+async function sendAI() {
+  const input = document.getElementById('ai-input');
+  const q = input.value.trim();
+  if(!q) return;
+  input.value = '';
+  aiAsk(q);
+}
+
+async function aiAsk(q) {
+  const msgs = document.getElementById('ai-messages');
+  msgs.innerHTML += `<div class="ai-msg user">${esc(q)}</div>`;
+  msgs.innerHTML += `<div class="ai-msg typing" id="ai-typing">⏳ ${lang==='uz'?'Javob tayyorlanmoqda...':'Thinking...'}</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+
+  const context = lang==='en'
+    ? `You are Exploria AI travel guide for Uzbekistan. Give short, helpful, friendly answers about travel, hotels, historical sites, food, and culture. Available hotels: ${allHotels.map(h=>h.name+' ('+h.location+', $'+h.price+')').join(', ')}. Places: ${allPlaces.map(p=>p.name+' ('+p.location+')').join(', ')}.`
+    : `Sen Exploria O'zbekiston sayohat platformasining AI gidisan. Qisqa, foydali, do'stona javob ber. Mehmonxonalar: ${allHotels.map(h=>h.name+' ('+h.location+', $'+h.price+')').join(', ')}. Joylar: ${allPlaces.map(p=>p.name+' ('+p.location+')').join(', ')}.`;
+
+  try {
+    const res = await fetch(AI_EDGE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPA_KEY
+      },
+      body: JSON.stringify({ question: q, context })
+    });
+    const data = await res.json();
+    document.getElementById('ai-typing')?.remove();
+    const answer = data.answer || (lang==='uz' ? 'Kechirasiz, javob bera olmadim.' : 'Sorry, could not answer.');
+    msgs.innerHTML += `<div class="ai-msg bot">${esc(answer)}</div>`;
+  } catch(e) {
+    document.getElementById('ai-typing')?.remove();
+    msgs.innerHTML += `<div class="ai-msg bot">${lang==='uz'?'AI hozir ishlamayapti.':'AI unavailable.'}</div>`;
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ============ AUTH ============
+function openAuth(){document.getElementById('auth-modal').classList.add('open');}
+function switchAuth(tab,btn){
+  document.querySelectorAll('.auth-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('auth-login').style.display=tab==='login'?'block':'none';
+  document.getElementById('auth-register').style.display=tab==='register'?'block':'none';
+}
+async function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  document.getElementById('login-err').textContent='';
+  try {
+    const data=await authApi('/token?grant_type=password',{email,password:pass});
+    currentUser={id:data.user?.id,email:data.user?.email,name:data.user?.user_metadata?.name||email.split('@')[0],token:data.access_token,isAdmin:data.user?.email==='exploriauzb@gmail.com'};
+    localStorage.setItem('exploria_user',JSON.stringify(currentUser));
+    updateNavUser();
+    closeModal('auth-modal');
+    showToast((lang==='uz'?'Xush kelibsiz, ':'Welcome, ')+currentUser.name+'!');
+  } catch(e){document.getElementById('login-err').textContent=e.message;}
+}
+async function doRegister(){
+  const name=document.getElementById('reg-name').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const pass=document.getElementById('reg-pass').value;
+  document.getElementById('reg-err').textContent='';
+  if(!name||!email||pass.length<6){document.getElementById('reg-err').textContent=lang==='uz'?'Barcha maydonlarni to\'ldiring':'Fill in all fields';return;}
+  try {
+    await authApi('/signup',{email,password:pass,data:{name}});
+    showToast(lang==='uz'?'Muvaffaqiyatli ro\'yxatdan o\'tildi!':'Successfully registered!');
+    closeModal('auth-modal');
+    setTimeout(()=>doLogin(),500);
+    document.getElementById('login-email').value=email;
+    document.getElementById('login-pass').value=pass;
+  } catch(e){document.getElementById('reg-err').textContent=e.message;}
+}
+function logout(){
+  currentUser=null;
+  localStorage.removeItem('exploria_user');
+  updateNavUser();
+  showPage('home');
+  showToast(lang==='uz'?'Chiqildi.':'Signed out.');
+}
+function updateNavUser(){
+  const area=document.getElementById('nav-user-area');
+  const mobileArea=document.getElementById('mobile-user-area');
+  if(currentUser){
+    const initial=(currentUser.name||'U')[0].toUpperCase();
+    area.innerHTML=`${currentUser.isAdmin?`<button class="nav-link" onclick="showPage('admin')">Admin</button>`:''}<div class="nav-avatar" onclick="showPage('profile')" title="${currentUser.name}">${initial}</div>`;
+    if(mobileArea) mobileArea.innerHTML=`${currentUser.isAdmin?`<button class="mobile-nav-link" onclick="showPage('admin');closeMobileMenu()">🔧 Admin panel</button>`:''}<button class="mobile-nav-link" onclick="showPage('profile');closeMobileMenu()">👤 Profil — ${currentUser.name}</button><button class="mobile-nav-link" onclick="logout();closeMobileMenu()" style="color:#ff6b6b;">Chiqish</button>`;
+    document.getElementById('profile-avatar').textContent=initial;
+    document.getElementById('profile-name').textContent=currentUser.name;
+    document.getElementById('profile-email').textContent=currentUser.email;
+    document.getElementById('set-name').value=currentUser.name||'';
+    document.getElementById('set-email').value=currentUser.email||'';
+  } else {
+    area.innerHTML=`<button class="nav-btn" onclick="openAuth()">${t('nav.login')}</button>`;
+  }
+}
+function saveProfile(){
+  currentUser.name=document.getElementById('set-name').value;
+  localStorage.setItem('exploria_user',JSON.stringify(currentUser));
+  updateNavUser();
+  showToast(lang==='uz'?'Profil saqlandi!':'Profile saved!');
+}
+
+// ============ FAVORITES ============
+function toggleFav(key,name,type,e){
+  e.stopPropagation();
+  const idx=favorites.indexOf(key);
+  if(idx>-1){favorites.splice(idx,1);showToast(lang==='uz'?'Sevimlilardan o\'chirildi':'Removed from favorites');}
+  else{favorites.push(key);showToast(lang==='uz'?'Sevimlilarga qo\'shildi ❤️':'Added to favorites ❤️');}
+  localStorage.setItem('exploria_favs',JSON.stringify(favorites));
+  renderFavs(); renderAll();
+}
+function renderFavs(){
+  const el=document.getElementById('favs-list');
+  if(!favorites.length){el.innerHTML=`<div class="empty"><div class="empty-icon">💛</div><h3>${t('profile.noFavs')}</h3></div>`;return;}
+  const items=favorites.map(k=>{
+    const [type,id]=k.split('_');
+    const src=type==='hotel'?allHotels:allPlaces;
+    const item=src.find(x=>x.id==id);
+    if(!item) return '';
+    return `<div class="fav-item"><span class="fav-emoji">${item.emoji||'📍'}</span><div><div class="fav-name">${esc(item.name)}</div><div class="fav-type">${type==='hotel'?(lang==='uz'?'Mehmonxona':'Hotel'):(lang==='uz'?'Joy':'Place')}</div></div><button class="remove-fav" onclick="toggleFav('${k}','','${type}',event)">✕</button></div>`;
+  }).join('');
+  el.innerHTML=items||`<div class="empty"><div class="empty-icon">💛</div><h3>${t('profile.noFavs')}</h3></div>`;
+}
+
+// ============ ADMIN ============
+const FIELDS={
+  hotel:[{k:'name',l:'Nomi',t:'text'},{k:'location',l:'Shahar',t:'text'},{k:'stars',l:'Yulduzlar',t:'number'},{k:'price',l:'Narx ($)',t:'number'},{k:'badge',l:'Badge',t:'text'},{k:'emoji',l:'Emoji',t:'text'},{k:'amenities',l:"Xizmatlar (vergul)",t:'text'},{k:'lat',l:'Latitude',t:'text'},{k:'lng',l:'Longitude',t:'text'},{k:'image_url',l:'Rasm URL (Unsplash)',t:'url'}],
+  audio:[{k:'title',l:'Sarlavha',t:'text'},{k:'category',l:'Kategoriya',t:'text'},{k:'location',l:'Joylashuv',t:'text'},{k:'duration',l:'Davomiyligi',t:'text'},{k:'emoji',l:'Emoji',t:'text'},{k:'audio_url',l:'Audio URL',t:'url',readonly:true},{k:'_audio_file',l:'MP3 fayl yuklash',t:'file'}],
+  place:[{k:'name',l:'Nomi',t:'text'},{k:'category',l:'Kategoriya',t:'text'},{k:'location',l:'Joylashuv',t:'text'},{k:'rating',l:'Reyting',t:'number'},{k:'emoji',l:'Emoji',t:'text'},{k:'is_hidden',l:'Yashirin joy',t:'checkbox'},{k:'lat',l:'Latitude',t:'text'},{k:'lng',l:'Longitude',t:'text'},{k:'image_url',l:'Rasm URL (Unsplash)',t:'url'}],
+  legend:[{k:'title',l:'Sarlavha',t:'text'},{k:'location',l:'Joylashuv',t:'text'},{k:'story',l:'Rivoyat',t:'textarea'},{k:'emoji',l:'Emoji',t:'text'},{k:'category',l:'Kategoriya',t:'text'},{k:'story_en',l:'Afsona (English)',t:'textarea'},{k:'image_url',l:'Rasm URL',t:'url'}],
+  museum:[{k:'name',l:'Nomi',t:'text'},{k:'name_en',l:'Name (EN)',t:'text'},{k:'region',l:'Viloyat',t:'text'},{k:'description',l:'Tavsif',t:'textarea'},{k:'description_en',l:'Description (EN)',t:'textarea'},{k:'address',l:'Manzil',t:'text'},{k:'working_hours',l:'Ish vaqti',t:'text'},{k:"ticket_price",l:"Chipta narxi (so'm)",t:"number"},{k:'phone',l:'Telefon',t:'text'},{k:'emoji',l:'Emoji',t:'text'},{k:'image_url',l:'Rasm URL',t:'url'},{k:'lat',l:'Latitude',t:'text'},{k:'lng',l:'Longitude',t:'text'},{k:'category',l:'Kategoriya',t:'text'}],
+  best:[{k:'title',l:'Sarlavha (UZ)',t:'text'},{k:'title_en',l:'Title (EN)',t:'text'},{k:'description',l:'Tavsif (UZ)',t:'text'},{k:'description_en',l:'Description (EN)',t:'text'},{k:'location',l:'Joylashuv',t:'text'},{k:'category',l:'Kategoriya',t:'text'},{k:'emoji',l:'Emoji',t:'text'},{k:'rank',l:'Tartib raqami',t:'number'}]
+};
+function switchAdminTab(id,btn){
+  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+  if(id==='admin-hotels') renderAdminTable('hotel');
+  if(id==='admin-audio') renderAdminTable('audio');
+  if(id==='admin-places') renderAdminTable('place');
+  if(id==='admin-legends') renderAdminTable('legend');
+  if(id==='admin-best') renderAdminTable('best');
+  if(id==='admin-museums') renderAdminTable('museum');
+  if(id==='admin-phrases') renderAdminPhrases();
+  if(id==='admin-users') loadAdminUsers();
+}
+function renderAdminTable(type){
+  const map={hotel:{data:allHotels,el:'admin-hotels-table',fields:['name','location','stars','price']},museum:{data:allMuseums,el:'admin-museums-table',fields:['name','region','category','ticket_price']},audio:{data:allAudio,el:'admin-audio-table',fields:['title','category','location']},place:{data:allPlaces,el:'admin-places-table',fields:['name','category','location','rating']},legend:{data:allLegends,el:'admin-legends-table',fields:['title','location','category']},best:{data:allBest,el:'admin-best-table',fields:['rank','title','location']}};
+  const {data,el,fields}=map[type];
+  const container=document.getElementById(el);
+  if(!data.length){container.innerHTML=`<div class="empty"><div class="empty-icon">📭</div><h3>Ma'lumot yo'q</h3></div>`;return;}
+  container.innerHTML=`<table class="admin-table"><thead><tr>${fields.map(f=>`<th>${f}</th>`).join('')}<th>Amal</th></tr></thead><tbody>${data.map(item=>`<tr>${fields.map(f=>`<td>${esc(String(item[f]||'—'))}</td>`).join('')}<td><button class="edit-btn" onclick="openModal('${type}',${item.id})">✏️</button><button class="del-btn" onclick="deleteItem('${type}',${item.id})">🗑</button></td></tr>`).join('')}</tbody></table>`;
+}
+async function loadAdminUsers(){
+  const el=document.getElementById('admin-users-table');
+  el.innerHTML='<div class="loader"><div class="spinner"></div></div>';
+  try {
+    const users = await api('user_profiles', {filter:'?select=*&order=created_at.desc'});
+    document.getElementById('a-users').textContent=users.length;
+    el.innerHTML=`<table class="admin-table"><thead><tr><th>Email</th><th>Ism</th><th>Sana</th></tr></thead><tbody>${users.map(u=>`<tr><td>${esc(u.email||'—')}</td><td>${esc(u.name||'—')}</td><td>${new Date(u.created_at).toLocaleDateString()}</td></tr>`).join('')}</tbody></table>`;
+  } catch(e){
+    el.innerHTML='<div class="empty"><div class="empty-icon">👥</div><h3>Foydalanuvchilar yuklanmadi</h3><p style="font-size:0.85rem;color:var(--muted);">'+e.message+'</p></div>';
+  }
+}
+function openModal(type,id=null){
+  editingType=type; editingId=id;
+  const labels={hotel:'Mehmonxona',audio:'Audio gid',place:'Joy',legend:'Afsona',best:'Eng sara'};
+  document.getElementById('modal-title').textContent=(id?'Tahrirlash: ':'Qo\'shish: ')+labels[type];
+  const dataSrc={hotel:allHotels,audio:allAudio,place:allPlaces,legend:allLegends,best:allBest};
+  const item=id?dataSrc[type].find(x=>x.id==id):null;
+  document.getElementById('modal-fields').innerHTML=FIELDS[type].map(f=>{
+    let val=item?.[f.k]||'';
+    if(f.k==='amenities'&&Array.isArray(val)) val=val.join(', ');
+    if(f.t==='checkbox') return `<label style="display:flex;gap:10px;align-items:center;"><input type="checkbox" id="mf_${f.k}" ${val?'checked':''}> ${f.l}</label>`;
+    if(f.t==='textarea') return `<div class="form-group"><label>${f.l}</label><textarea class="form-input" id="mf_${f.k}" rows="3" style="resize:vertical;">${esc(String(val))}</textarea></div>`;
+    if(f.t==='file') return `<div class="form-group"><label>${f.l}</label><input class="form-input" id="mf_${f.k}" type="file" accept="audio/*" style="padding:8px"><div id="upload-progress" style="display:none;font-size:0.83rem;color:var(--orange);margin-top:6px">⏳ Yuklanmoqda...</div></div>`;
+    if(f.k==='image_url') return `<div class="form-group"><label>${f.l}</label><input class="form-input" id="mf_${f.k}" type="url" value="${esc(String(val))}" placeholder="https://images.unsplash.com/...">${val?`<img src="${esc(String(val))}" style="width:100%;height:120px;object-fit:cover;border-radius:10px;margin-top:8px;" onerror="this.style.display='none'">`:''}</div>`;
+    return `<div class="form-group"><label>${f.l}</label><input class="form-input" id="mf_${f.k}" type="${f.t}" value="${esc(String(val))}" ${f.readonly?'readonly style="background:#f5f5f5;color:#999"':''}></div>`;
+  }).join('');
+  document.getElementById('item-modal').classList.add('open');
+}
+async function saveItem(){
+  const body={};
+  if(editingType==='audio'){
+    const fileInput=document.getElementById('mf__audio_file');
+    if(fileInput&&fileInput.files[0]){
+      const file=fileInput.files[0];
+      document.getElementById('upload-progress').style.display='block';
+      try {
+        const fileName=Date.now()+'_'+file.name.replace(/\s+/g,'_');
+        const upRes=await fetch(`${SUPA_URL}/storage/v1/object/audio-guides/${fileName}`,{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':`Bearer ${currentUser?.token||SUPA_KEY}`,'Content-Type':file.type,'Cache-Control':'3600','x-upsert':'true'},body:file});
+        if(!upRes.ok) throw new Error('Upload xato');
+        body['audio_url']=`${SUPA_URL}/storage/v1/object/public/audio-guides/${fileName}`;
+        document.getElementById('upload-progress').textContent='✅ Yuklandi!';
+      } catch(e){showToast('Audio yuklashda xato');return;}
+    }
+  }
+  FIELDS[editingType].forEach(f=>{
+    if(f.k.startsWith('_')) return;
+    if(f.k==='audio_url' && body['audio_url']) return; // already set from upload
+    const el=document.getElementById('mf_'+f.k);
+    if(!el) return;
+    if(f.t==='checkbox') body[f.k]=el.checked;
+    else if(f.t==='number') {
+      const raw = el.value.toString().trim();
+      if(raw === '') {
+        body[f.k] = (f.k==='lat'||f.k==='lng'||f.k==='rating') ? null : 0;
+      } else {
+        const val = parseFloat(raw);
+        body[f.k] = isNaN(val) ? null : val;
+      }
+    }
+    else if(f.k==='amenities') body[f.k]=el.value?el.value.split(',').map(s=>s.trim()).filter(Boolean):[];
+    else if(f.t==='file') return;
+    else { const v=el.value.trim(); body[f.k] = v===''? null : v; }
+  });
+  const tableMap={hotel:'hotels',audio:'audio_guides',place:'places',legend:'legends',best:'uzbekistan_best',museum:'museums'};
+  try {
+    if(editingId) await api(tableMap[editingType],{method:'PATCH',body,filter:`?id=eq.${editingId}`});
+    else await api(tableMap[editingType],{method:'POST',body});
+    showToast(editingId?'Yangilandi ✓':'Qo\'shildi ✓');
+    closeModal('item-modal');
+    await loadAll();
+    renderAdminTable(editingType);
+  } catch(e){showToast('Xato: '+e.message);}
+}
+async function deleteItem(type,id){
+  if(!confirm('O\'chirishni tasdiqlaysizmi?')) return;
+  const tableMap={hotel:'hotels',audio:'audio_guides',place:'places',legend:'legends',best:'uzbekistan_best',museum:'museums'};
+  try {
+    await api(tableMap[type],{method:'DELETE',filter:`?id=eq.${id}`});
+    showToast('O\'chirildi');
+    await loadAll();
+    renderAdminTable(type);
+  } catch(e){showToast('Xato: '+e.message);}
+}
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('page-'+name)?.classList.add('active');
+  document.querySelector(`.nav-link[onclick*="'${name}'"]`)?.classList.add('active');
+  if(name==='map') setTimeout(initMap,100);
+  if(name==='museums') { setTimeout(loadMuseums, 100); }
+  if(name==='currency') { setTimeout(()=>{ fetchRates(); calcCurrency(); },100); }
+  if(name==='phrases') { setTimeout(renderPhrases,100); }
+  if(name==='profile'){renderFavs();if(!currentUser){openAuth();return;} loadUserPoints(currentUser.id);}
+  if(name==='admin'){if(!currentUser?.isAdmin){showToast('Admin huquqi kerak!');return;}}
+  window.scrollTo(0,0);
+}
+function switchProfileTab(id,btn){
+  document.querySelectorAll('.profile-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.profile-section').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+}
+function closeModal(id){document.getElementById(id)?.classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+function esc(str){return String(str||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);}
+
+
+// ============ CURRENCY ============
+const RATES_BASE = {
+  USD: 12700, EUR: 13800, RUB: 138, CNY: 1750, GBP: 16200, KZT: 28
+};
+let liveRates = {...RATES_BASE};
+
+async function fetchRates() {
+  try {
+    const res = await fetch('https://open.er-api.com/v6/latest/USD');
+    const data = await res.json();
+    if (data.result === 'success') {
+      const usdToUzs = RATES_BASE.USD;
+      liveRates = {
+        USD: usdToUzs,
+        EUR: Math.round(usdToUzs / data.rates.EUR),
+        RUB: Math.round(usdToUzs / data.rates.RUB),
+        CNY: Math.round(usdToUzs / data.rates.CNY),
+        GBP: Math.round(usdToUzs / data.rates.GBP),
+        KZT: Math.round(usdToUzs / data.rates.KZT),
+      };
+      document.getElementById('curr-updated').textContent = t('currency.updated') + ': ' + new Date().toLocaleTimeString();
+    }
+  } catch(e) {
+    document.getElementById('curr-updated').textContent = t('currency.offline');
+  }
+  calcCurrency();
+  renderAllRates();
+}
+
+function calcCurrency() {
+  const amount = parseFloat(document.getElementById('curr-amount')?.value) || 0;
+  const from = document.getElementById('curr-from')?.value || 'USD';
+  const rate = liveRates[from] || RATES_BASE[from] || 12700;
+  const result = Math.round(amount * rate);
+  const el = document.getElementById('curr-result');
+  const rateEl = document.getElementById('curr-rate');
+  if(el) el.textContent = result.toLocaleString() + " so'm";
+  if(rateEl) rateEl.textContent = '1 ' + from + ' = ' + rate.toLocaleString() + " so'm";
+}
+
+function renderAllRates() {
+  const el = document.getElementById('all-rates');
+  if(!el) return;
+  const flags = {USD:'🇺🇸', EUR:'🇪🇺', RUB:'🇷🇺', CNY:'🇨🇳', GBP:'🇬🇧', KZT:'🇰🇿'};
+  el.innerHTML = Object.entries(liveRates).map(([cur, rate]) =>
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#fff;border-radius:10px;border:1px solid var(--border);">
+      <span style="font-weight:600;">${flags[cur]||''} ${cur}</span>
+      <span style="color:var(--orange);font-weight:700;">${rate.toLocaleString()} so'm</span>
+    </div>`
+  ).join('');
+}
+
+// ============ PHRASES ============
+const PHRASES = [
+  {cat:'greet', uz:"Salom!", en:"Hello!", ru:"Привет!", zh:"你好！", tip:"Kundalik salomlashish"},
+  {cat:'greet', uz:"Xayr!", en:"Goodbye!", ru:"До свидания!", zh:"再见！", tip:"Xayrlashish"},
+  {cat:'greet', uz:"Rahmat!", en:"Thank you!", ru:"Спасибо!", zh:"谢谢！", tip:"Minnatdorchilik"},
+  {cat:'greet', uz:"Iltimos", en:"Please", ru:"Пожалуйста", zh:"请", tip:"Iltimos deyish"},
+  {cat:'greet', uz:"Kechirasiz", en:"Excuse me", ru:"Извините", zh:"对不起", tip:"Uzr sorash"},
+  {cat:'greet', uz:"Ha / Yoq", en:"Yes / No", ru:"Да / Нет", zh:"是 / 不", tip:"Javob berish"},
+  {cat:'food', uz:"Menyu bering", en:"Menu please", ru:"Меню, пожалуйста", zh:"请给菜单", tip:"Restoranda"},
+  {cat:'food', uz:"Bu necha pul?", en:"How much is this?", ru:"Сколько стоит?", zh:"这多少钱？", tip:"Narx sorash"},
+  {cat:'food', uz:"Juda mazali!", en:"Very delicious!", ru:"Очень вкусно!", zh:"非常好吃！", tip:"Maqtash"},
+  {cat:'food', uz:"Hisob-kitob", en:"Bill please", ru:"Счёт, пожалуйста", zh:"请结账", tip:"Tolash vaqti"},
+  {cat:'food', uz:"Suv bering", en:"Water please", ru:"Воду, пожалуйста", zh:"请给水", tip:"Suv sorash"},
+  {cat:'transport', uz:"Taksiga qancha?", en:"How much for taxi?", ru:"Сколько до...?", zh:"打车多少钱？", tip:"Taksi narxi"},
+  {cat:'transport', uz:"...ga olib boring", en:"Take me to...", ru:"Отвезите меня в...", zh:"带我去...", tip:"Manzil aytish"},
+  {cat:'transport', uz:"Toxtang!", en:"Stop here!", ru:"Остановите!", zh:"停这里！", tip:"Toxtatish"},
+  {cat:'transport', uz:"Metro qayerda?", en:"Where is metro?", ru:"Где метро?", zh:"地铁在哪里？", tip:"Metro topish"},
+  {cat:'hotel', uz:"Xona bormi?", en:"Any rooms available?", ru:"Есть свободные номера?", zh:"有空房间吗？", tip:"Band qilish"},
+  {cat:'hotel', uz:"Wi-Fi parol?", en:"Wi-Fi password?", ru:"Пароль Wi-Fi?", zh:"WiFi密码？", tip:"Internet"},
+  {cat:'hotel', uz:"Checkout soat nechada?", en:"What time is checkout?", ru:"Когда выезд?", zh:"几点退房？", tip:"Chiqish vaqti"},
+  {cat:'hotel', uz:"Xona tozalansinmi?", en:"Can you clean the room?", ru:"Уберите номер?", zh:"请打扫房间", tip:"Xizmat"},
+  {cat:'emergency', uz:"Yordam bering!", en:"Help!", ru:"Помогите!", zh:"救命！", tip:"Xavfli holat"},
+  {cat:'emergency', uz:"Shifokor kerak", en:"I need a doctor", ru:"Нужен врач", zh:"我需要医生", tip:"Tibbiy yordam"},
+  {cat:'emergency', uz:"Politsiya!", en:"Police!", ru:"Полиция!", zh:"警察！", tip:"Xavfsizlik"},
+  {cat:'emergency', uz:"Yoqoldim", en:"I am lost", ru:"Я заблудился", zh:"我迷路了", tip:"Yol topish"},
+];
+
+let currentPhraseFilter = 'all';
+
+function filterPhrases(cat, btn) {
+  currentPhraseFilter = cat;
+  document.querySelectorAll('.map-filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderPhrases();
+}
+
+
+function renderAdminPhrases() {
+  const el = document.getElementById('admin-phrases-list');
+  if(!el) return;
+  el.innerHTML = PHRASES.map((p,i) => `
+    <div style="background:#f9f9ff;border-radius:12px;padding:14px;border:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;">
+      <div>
+        <div style="font-weight:600;font-size:0.88rem;margin-bottom:4px;">${esc(p.uz)}</div>
+        <div style="font-size:0.78rem;color:var(--muted);">${esc(p.en)} · ${esc(p.ru)} · ${esc(p.zh)}</div>
+      </div>
+      <span style="background:#fff4ee;color:#ff4500;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">${esc(p.cat)}</span>
+    </div>`).join('');
+}
+
+function renderPhrases() {
+  const el = document.getElementById('phrases-grid');
+  if(!el) return;
+  const filtered = currentPhraseFilter === 'all' ? PHRASES : PHRASES.filter(p=>p.cat===currentPhraseFilter);
+  el.innerHTML = filtered.map(p => `
+    <div style="background:#fff;border-radius:16px;padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);border-left:4px solid var(--orange);">
+      <div style="font-size:0.75rem;font-weight:600;color:var(--orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">${p.tip}</div>
+      <div style="display:grid;gap:8px;">
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span style="font-size:1.1rem;">🇺🇿</span>
+          <span style="font-weight:700;font-size:1rem;">${esc(p.uz)}</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span style="font-size:1.1rem;">🇬🇧</span>
+          <span style="color:#444;font-size:0.9rem;">${esc(p.en)}</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span style="font-size:1.1rem;">🇷🇺</span>
+          <span style="color:#444;font-size:0.9rem;">${esc(p.ru)}</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span style="font-size:1.1rem;">🇨🇳</span>
+          <span style="color:#444;font-size:0.9rem;">${esc(p.zh)}</span>
+        </div>
+      </div>
+      <button onclick="copyPhrase('${esc(p.uz)}')" style="margin-top:12px;padding:6px 14px;background:#fff4ee;color:var(--orange);border:1px solid var(--border);border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;">📋 <span data-i18n-text="phrases.copy">Nusxa</span></button>
+    </div>`).join('');
+}
+
+function copyPhrase(text) {
+  navigator.clipboard?.writeText(text).then(()=>showToast('Nusxa olindi!')).catch(()=>showToast(text));
+}
+
+
+// ============ LEVELS & POINTS ============
+const LEVELS = [
+  {min:0,    name:'Yangi Sayohatchi', nameEn:'New Traveler',     icon:'🌱', color:'#6b7280'},
+  {min:50,   name:'Qiziquvchan',      nameEn:'Curious Explorer', icon:'🗺️', color:'#3b82f6'},
+  {min:150,  name:'Sayohatchi',       nameEn:'Traveler',         icon:'🎒', color:'#8b5cf6'},
+  {min:300,  name:'Tajribali Sayyoh', nameEn:'Experienced',      icon:'⭐', color:'#f59e0b'},
+  {min:500,  name:'Mahalliy Ekspert', nameEn:'Local Expert',     icon:'🏆', color:'#ef4444'},
+  {min:1000, name:'Exploria Legendasi',nameEn:'Exploria Legend', icon:'👑', color:'#ff4500'},
+];
+
+function getLevel(points) {
+  let level = LEVELS[0];
+  for(const l of LEVELS) { if(points >= l.min) level = l; }
+  return level;
+}
+
+function getNextLevel(points) {
+  for(const l of LEVELS) { if(points < l.min) return l; }
+  return null;
+}
+
+async function addPoints(userId, amount, reason) {
+  if(!userId) return;
+  try {
+    // Get current points
+    const existing = await api('user_points', {filter:`?user_id=eq.${userId}`});
+    const cur = existing?.[0];
+    const newPoints = (cur?.points || 0) + amount;
+    const newLevel = getLevel(newPoints);
+    
+    if(cur) {
+      await api('user_points', {
+        method:'PATCH',
+        body:{
+          points: newPoints,
+          level: newLevel.name,
+          total_reviews: reason==='review' ? (cur.total_reviews||0)+1 : cur.total_reviews,
+          total_bookings: reason==='booking' ? (cur.total_bookings||0)+1 : cur.total_bookings,
+          updated_at: new Date().toISOString()
+        },
+        filter:`?user_id=eq.${userId}`
+      });
+    } else {
+      await api('user_points', {
+        method:'POST',
+        body:{
+          user_id: userId,
+          user_name: currentUser?.name || 'Foydalanuvchi',
+          points: newPoints,
+          level: newLevel.name,
+          total_reviews: reason==='review' ? 1 : 0,
+          total_bookings: reason==='booking' ? 1 : 0
+        }
+      });
+    }
+    
+    // Show level up notification
+    const oldLevel = cur ? getLevel(cur.points) : LEVELS[0];
+    if(newLevel.name !== oldLevel.name) {
+      showLevelUp(newLevel);
+    } else {
+      showToast(`+${amount} ball! ${newLevel.icon} ${newLevel.name}`);
+    }
+    
+    // Update profile if open
+    loadUserPoints(userId);
+  } catch(e) { console.log('Points error:', e); }
+}
+
+function showLevelUp(level) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  overlay.innerHTML = `
+    <div style="background:linear-gradient(135deg,#0d0d1a,#1a0533);border:2px solid ${level.color};border-radius:24px;padding:40px;text-align:center;max-width:380px;animation:popIn .4s ease;">
+      <div style="font-size:4rem;margin-bottom:16px;">${level.icon}</div>
+      <div style="color:#fff;font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;opacity:0.7;">Yangi daraja!</div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:${level.color};margin-bottom:20px;">${level.name}</div>
+      <button onclick="this.closest('div[style]').remove()" style="padding:12px 32px;background:linear-gradient(135deg,#ff4500,#ff6a00);color:#fff;border:none;border-radius:12px;font-weight:700;cursor:pointer;font-size:1rem;">Zo'r! 🎉</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', e => { if(e.target===overlay) overlay.remove(); });
+}
+
+async function loadUserPoints(userId) {
+  if(!userId) return;
+  try {
+    const data = await api('user_points', {filter:`?user_id=eq.${userId}`});
+    const pts = data?.[0];
+    if(!pts) return;
+    const level = getLevel(pts.points);
+    const next = getNextLevel(pts.points);
+    const progress = next ? Math.round(((pts.points - level.min) / (next.min - level.min)) * 100) : 100;
+    
+    const el = document.getElementById('user-level-card');
+    if(el) {
+      el.innerHTML = `
+        <div style="background:linear-gradient(135deg,#0d0d1a,#1a0533);border-radius:16px;padding:20px;color:#fff;">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+            <div style="width:52px;height:52px;border-radius:50%;background:${level.color};display:flex;align-items:center;justify-content:center;font-size:1.6rem;">${level.icon}</div>
+            <div>
+              <div style="font-weight:700;font-size:1.1rem;">${level.name}</div>
+              <div style="opacity:0.6;font-size:0.82rem;">${pts.points} ball</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
+            <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:10px;text-align:center;">
+              <div style="font-size:1.3rem;font-weight:700;color:#ff6a00;">${pts.points}</div>
+              <div style="font-size:0.72rem;opacity:0.6;">Ball</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:10px;text-align:center;">
+              <div style="font-size:1.3rem;font-weight:700;color:#ff6a00;">${pts.total_reviews||0}</div>
+              <div style="font-size:0.72rem;opacity:0.6;">Fikrlar</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:10px;text-align:center;">
+              <div style="font-size:1.3rem;font-weight:700;color:#ff6a00;">${pts.total_bookings||0}</div>
+              <div style="font-size:0.72rem;opacity:0.6;">Bronlar</div>
+            </div>
+          </div>
+          ${next ? `
+          <div style="font-size:0.78rem;opacity:0.6;margin-bottom:6px;">Keyingi daraja: ${next.icon} ${next.name} (${next.min - pts.points} ball qoldi)</div>
+          <div style="height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;">
+            <div style="height:100%;width:${progress}%;background:linear-gradient(90deg,#ff4500,#ffaa00);border-radius:4px;transition:width .5s;"></div>
+          </div>` : `<div style="color:#ffaa00;font-weight:600;">🎉 Maksimal daraja!</div>`}
+        </div>`;
+    }
+    
+    // Update leaderboard
+    loadLeaderboard();
+  } catch(e) {}
+}
+
+async function loadLeaderboard() {
+  try {
+    const data = await api('user_points', {filter:'?order=points.desc&select=*&limit=10'});
+    const el = document.getElementById('leaderboard-list');
+    if(!el || !data.length) return;
+    el.innerHTML = data.map((u,i) => {
+      const level = getLevel(u.points);
+      const medals = ['🥇','🥈','🥉'];
+      return `<div style="display:flex;align-items:center;gap:12px;padding:10px;background:${i<3?'rgba(255,69,0,0.08)':'#f9f9ff'};border-radius:12px;border:1px solid ${i<3?'rgba(255,69,0,0.2)':'var(--border)'};">
+        <span style="font-size:1.3rem;min-width:28px;">${medals[i]||'#'+(i+1)}</span>
+        <div style="flex:1;">
+          <div style="font-weight:600;font-size:0.9rem;">${esc(u.user_name||'Foydalanuvchi')}</div>
+          <div style="font-size:0.75rem;color:var(--muted);">${level.icon} ${level.name}</div>
+        </div>
+        <div style="font-weight:700;color:#ff4500;">${u.points} ball</div>
+      </div>`;
+    }).join('');
+  } catch(e) {}
+}
+
+
+
+// ============ WEATHER ============
+const CITIES_WEATHER = [
+  {name:'Toshkent', lat:41.2995, lon:69.2401},
+  {name:'Samarqand', lat:39.6547, lon:66.9758},
+  {name:'Buxoro', lat:39.7681, lon:64.4556},
+];
+
+async function loadNavWeather() {
+  try {
+    const city = CITIES_WEATHER[0];
+    const res = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current=temperature_2m,weather_code&timezone=Asia/Tashkent`
+    );
+    const data = await res.json();
+    const temp = Math.round(data.current?.temperature_2m || 0);
+    const code = data.current?.weather_code || 0;
+    const icon = code<=1?'☀️':code<=3?'⛅':code<=67?'🌧️':code<=77?'❄️':'🌩️';
+    const el = document.getElementById('nav-weather');
+    if(el) el.innerHTML = `${icon} <span>${temp}°C</span> <span style="opacity:0.5;font-size:0.72rem;">Toshkent</span>`;
+  } catch(e) {}
+}
+
+// ============ MUSEUMS ============
+let allMuseums = [];
+let museumFilter = 'all';
+
+async function loadMuseums() {
+  if(allMuseums.length) { renderMuseums(allMuseums); return; }
+  try {
+    allMuseums = await api('museums', {filter:'?select=*&order=region.asc'});
+    renderMuseums(allMuseums);
+    document.getElementById('a-museums') && (document.getElementById('a-museums').textContent = allMuseums.length);
+  } catch(e) { 
+    document.getElementById('museums-list').innerHTML = '<div class="empty"><div class="empty-icon">🏛️</div><h3>Muzeylar yuklanmadi</h3></div>';
+  }
+}
+
+function filterMuseums(filter, btn) {
+  museumFilter = filter;
+  document.querySelectorAll('#page-museums .map-filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const filtered = filter==='all' ? allMuseums : 
+    allMuseums.filter(m => m.region===filter || m.category===filter);
+  renderMuseums(filtered);
+}
+
+function renderMuseums(museums) {
+  const el = document.getElementById('museums-list');
+  if(!el) return;
+  if(!museums.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">🏛️</div><h3>Muzey topilmadi</h3></div>'; return; }
+  el.innerHTML = museums.map(m => museumCard(m)).join('');
+}
+
+function museumCard(m) {
+  const name = lang==='en' && m.name_en ? m.name_en : m.name;
+  const desc = lang==='en' && m.description_en ? m.description_en : m.description;
+  const isUyMuzey = m.category === 'Uy muzeyi';
+  return `<div style="background:#fff;border-radius:20px;box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--border);transition:transform .25s;" onmouseover="this.style.transform='translateY(-6px)'" onmouseout="this.style.transform='translateY(0)'">
+    <div style="height:180px;background:linear-gradient(135deg,${isUyMuzey?'#7c3aed,#ff0080':'#ff4500,#ff6a00'});position:relative;overflow:hidden;">
+      ${m.image_url ? `<img src="${m.image_url}" alt="${esc(name)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy" onerror="this.style.display='none'">` : ''}
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent,rgba(0,0,0,0.5));"></div>
+      <div style="position:absolute;top:12px;left:12px;background:${isUyMuzey?'rgba(124,58,237,0.9)':'rgba(255,69,0,0.9)'};color:#fff;padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;">${esc(m.category||'Muzey')}</div>
+      <div style="position:absolute;bottom:12px;left:12px;color:#fff;font-size:2rem;">${m.emoji||'🏛️'}</div>
+      <div style="position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.6);color:#fff;padding:4px 10px;border-radius:20px;font-size:0.78rem;">📍 ${esc(m.region)}</div>
+    </div>
+    <div style="padding:18px;">
+      <div style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;margin-bottom:6px;">${esc(name)}</div>
+      <div style="font-size:0.83rem;color:var(--muted);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${esc(desc||'')}</div>
+      <div style="display:grid;gap:5px;margin-bottom:12px;">
+        ${m.working_hours ? `<div style="font-size:0.8rem;color:#444;">🕐 ${esc(m.working_hours)}</div>` : ''}
+        ${m.ticket_price ? `<div style="font-size:0.8rem;color:#444;">🎟️ ${m.ticket_price.toLocaleString()} so'm</div>` : ''}
+        ${m.address ? `<div style="font-size:0.8rem;color:#444;">📍 ${esc(m.address)}</div>` : ''}
+        ${m.phone ? `<div style="font-size:0.8rem;color:#444;">📞 ${esc(m.phone)}</div>` : ''}
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button onclick="openReviews('museum',${m.id},'${esc(name)}')" style="flex:1;padding:9px;background:linear-gradient(135deg,#ff4500,#ff6a00);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer;font-size:0.82rem;">⭐ Fikrlar</button>
+        ${m.lat && m.lng ? `<button onclick="openMuseumOnMap(${m.lat},${m.lng},'${esc(name)}')" style="padding:9px 14px;background:#fff4ee;color:var(--orange);border:1px solid var(--border);border-radius:10px;font-weight:600;cursor:pointer;font-size:0.82rem;">🗺️</button>` : ''}
+        ${m.website ? `<a href="${esc(m.website)}" target="_blank" style="padding:9px 14px;background:#f0f0ff;color:#7c3aed;border:1px solid #e0e0ff;border-radius:10px;font-weight:600;font-size:0.82rem;text-decoration:none;">🌐</a>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+function openMuseumOnMap(lat, lng, name) {
+  showPage('map');
+  setTimeout(() => {
+    initMap();
+    setTimeout(() => {
+      mapInstance.setView([lat, lng], 15);
+      L.marker([lat, lng], {icon: L.divIcon({
+        html: `<div style="background:linear-gradient(135deg,#ff4500,#ff6a00);color:#fff;padding:7px 12px;border-radius:10px;font-size:0.78rem;font-weight:700;white-space:nowrap;box-shadow:0 3px 12px rgba(0,0,0,0.3);">🏛️ ${name}</div>`,
+        className:'', iconAnchor:[0,0]
+      })}).addTo(mapInstance).bindPopup(`<b>${name}</b>`).openPopup();
+    }, 300);
+  }, 150);
+}
+
+// REVIEWS
+let selectedRating = 0;
+let reviewItemType = null;
+let reviewItemId = null;
+
+function openReviews(type, id, name) {
+  reviewItemType = type;
+  reviewItemId = id;
+  selectedRating = 0;
+  document.getElementById('review-item-name').textContent = name;
+  document.getElementById('review-text-input').value = '';
+  updateStars(0);
+  loadReviews(type, id);
+  document.getElementById('review-modal').classList.add('open');
+}
+
+function updateStars(n) {
+  selectedRating = n;
+  document.querySelectorAll('.star-select span').forEach((s,i) => {
+    s.classList.toggle('active', i < n);
+  });
+}
+
+async function submitReview() {
+  if (!currentUser) { showToast('Avval kiring!'); return; }
+  if (!selectedRating) { showToast('Reyting tanlang!'); return; }
+  const comment = document.getElementById('review-text-input').value.trim();
+  if (!comment) { showToast('Izoh yozing!'); return; }
+  try {
+    await api('reviews', { method:'POST', body:{
+      user_id: currentUser.id || null,
+      user_name: currentUser.name || 'Foydalanuvchi',
+      item_type: reviewItemType,
+      item_id: parseInt(reviewItemId),
+      rating: parseInt(selectedRating),
+      comment: comment
+    }});
+    showToast('Fikr qoldirildi!');
+    document.getElementById('review-text-input').value = '';
+    selectedRating = 0;
+    updateStars(0);
+    loadReviews(reviewItemType, reviewItemId);
+    // Add points for review
+    addPoints(currentUser.id, 20, 'review');
+  } catch(e) { showToast('Xato: ' + e.message); }
+}
+
+async function loadReviews(type, id) {
+  const el = document.getElementById('reviews-list');
+  if(!el) return;
+  el.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+  try {
+    const reviews = await api('reviews', { filter:'?item_type=eq.'+type+'&item_id=eq.'+id+'&order=created_at.desc' });
+    if (!reviews.length) { 
+      el.innerHTML = '<div style="color:var(--muted);font-size:0.87rem;text-align:center;padding:20px;">Hali fikr yoq. Birinchi boling!</div>'; 
+      return; 
+    }
+    el.innerHTML = reviews.map(r => '<div class="review-item"><div class="review-header"><div><span class="reviewer-name">'+esc(r.user_name||'Foydalanuvchi')+'</span><span class="review-stars" style="margin-left:8px">'+'★'.repeat(r.rating)+'☆'.repeat(5-r.rating)+'</span></div><span class="review-date">'+new Date(r.created_at).toLocaleDateString()+'</span></div><div class="review-text">'+esc(r.comment)+'</div></div>').join('');
+  } catch(e) { 
+    el.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px;">Yuklanmadi</div>'; 
+  }
+}
+
+init();
+</script>
+</body>
+</html>
